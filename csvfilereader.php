@@ -19,10 +19,49 @@
 
 	    while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
 	    	if($data[0] = "sell"){
-	    		mysqli_query($con, "");
+				$indQuery = "SELECT * FROM individual WHERE Name='data[1]'";
+				$portQuery = "SELECT * FROM portfolio WHERE Name='data[1]'";
+				if(mysqli_query($con, $indQuery){
+					$stockQuery = "SELECT * FROM company WHERE Stock_name='data[2]'";
+					$port2Query = "SELECT * FROM portfolio WHERE Name='data[2]'";
+					if(mysqli_query($con, $stockQuery){
+						//query current appreciation for company's stock
+						//update individual's cash with investment multiplied by appreciation
+					}else if(mysqli_query($con, $port2Query){
+						//query current appreciation for portfolio
+						//update individual's cash with investment multiplied by appreciation
+					}
+				}else if(mysqli_query($con), $portQuery){
+					//query ALL the companies' stock appreciation that the portfolio was invested in.
+				}
+	    		//mysqli_query($con, "");
 
 	    	} else if($data[0] = "buy"){
-	    		mysqli_query($con, "");
+	    		$indQuery = "SELECT * FROM individual WHERE Name='data[1]'";
+				$portQuery = "SELECT * FROM portfolio WHERE Name='data[1]'";
+				if(mysqli_query($con, $indQuery){
+				
+					$currCash = "SELECT Cash FROM individual WHERE Name='data[1]'";
+					if($currCash-'data[3]' < 0){
+						//log error that individual does not have sufficient funds to invest
+					}else{
+						$newCash = $currCash-'data[3]';
+					}
+					//update how much cash that individual has
+					mysqli_query($con, "UPDATE individual SET Cash='$newCash' WHERE Name='data[1]')";
+						
+					$stockQuery = "SELECT * FROM company WHERE Stock_name='data[2]'";
+					$port2Query = "SELECT * FROM portfolio WHERE Name='data[2]'";
+					if(mysqli_query($con, $stockQuery){
+						//update the list of companies the individual is invested in
+						
+					}else if(mysqli_query($con, $port2Query){
+						//update the list of portfolios the individual is invested in
+					}
+				}else if(mysqli_query($con), $portQuery){
+					
+				}
+				//mysqli_query($con, "");
 
 	    	} else if($data[0] = "sellbuy"){
 	    		mysqli_query($con, "");
