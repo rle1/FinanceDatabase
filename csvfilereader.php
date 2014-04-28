@@ -8,6 +8,7 @@
  	<?php
 
 	if (($handle = fopen("test.csv", "r")) !== FALSE) {
+
 		$con = mysqli_connect("localhost", "", "");
 				if (!$con) {
 					exit('Connect Error (' . mysqli_connect_errno() . ')' . mysqli_connect_error());
@@ -34,7 +35,7 @@
 				}
 
 	    	} else if($data[0] = "fund"){
-	    		$sql = mysqli_query($con, "INSERT INTO portfolio (name, cash) VALUES ('$data[1]', '$data[2]ß')");
+	    		$sql = mysqli_query($con, "INSERT INTO portfolio (name, cash) VALUES ('$data[1]', '$data[2]')");
 	    		if (!mysqli_query($con,$sql)) {
 				  die('Error: ' . mysqli_error($con));
 				}
