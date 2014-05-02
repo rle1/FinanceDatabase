@@ -1,80 +1,69 @@
 <!DOCTYPE html>
- <html>
- <head>
-     <meta charset="utf-8">
-     <title>Getting started with Bootstrap</title>
-     <link rel="stylesheet" href="http://flip.hr/css/bootstrap.min.css">
-
-     <script>
-     function validateCompanyQuote() {
-        var x=document.forms["companyQuote"]["company"].value;
-        if (x==null || x=="") {
-          alert("Company's name must be filled out");
-          return false;
-        }
-      }
-     </script>
-
- </head>
- <body>
-         
-  <div class="container">
-         
-         <div class="hero-unit">
-         <h1 align="center">Finance Database</h1>
-         
-         </div><!-- .hero-unit -->
+<html>
+   <head>
+      <meta charset="utf-8">
+      <title>Finance/Stock Administrative System</title>
+      <link rel="stylesheet" href="bootstrap.min.css">
+      <link rel="stylesheet" href="pagelayout.css">
+   </head>
+	
+   <body>
+       
+      <!--NAVIGATION BAR-->
+      <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+         <div class="container">
+            <div class="collapse navbar-collapse">
+               <ul class="nav navbar-nav">
+                  <li class="active"><a href="index.php">HOME</a></li>
+                  <li><a href="dataimport.php">DATA IMPORT</a></li>
+                  <li><a href="dataexport.php">DATA EXPORT</a></li>
+                  <li><a href="company.php">COMPANY</a></li>
+                  <li><a href="individual.php">INDIVIDUAL</a></li>
+                  <li><a href="portfolio.php">PORTFOLIO</a></li>
+               </ul>
+            </div>
+         </div>
+      </div>
+      
+      <!--BANNER-->
+      <div class="container theme-showcase" role="main">
+         <div class="jumbotron banner">
+            <h1><b>Finance/Stock<br> Administrative System</b></h1>
+         </div>
+      </div>
+      
+      <div class="container content">
+         <h2><b>ABOUT</b></h2>
+         <hr>
+         <p>
+            <b>
+               CMSC424 0101 - Database Design Project - Stocks<br>
+               Developers: Richard Le, Philip Phlek, Anh Tran<br><br>
+               The database keeps track of the following types of information/entities:<br>
+               <div class="pad">
+                  - Companies: descriptive information about a company<br>
+                  - Quotes: the share price of a company at a specific point in time<br>
+                  - Portfolios: a set of stocks/cash, and a percentage of each<br>
+                  - Individuals: an individual can be thought of as a portfolio that is not contained by any other portfolio<br>
+                  - Activity: historical record of portfolio activity
+               </div>
+            </b>
+         </p>
+         <hr>
+         <h2><b>FUNCTIONALITY PROVIDED</b></h2>
+         <hr>
+            <p>
+            <b>
+               - Calculate an individual's total return<br>
+               - Calculate a fund's total return<br>
+               - Determine a Company's quote/volume/day_hi/day_lo at a certain time<br>
+               - How much money an individual/portfolio has invested in a company/portfolio ordered by ID number<br>
+               - What companies/portfolios an individual/portfolio is invested in at a certain time<br>
+               - How much a user's investment has appreciated or depreciated at time of query<br>
+            </b>
+         </p>
+         <hr>
+      </div>
         
- 
-  </div><!-- .container -->
- 
-   <form action="CompanyQuote.php" method="GET" name="companyQuote">
-      <label> Show info company's quote: </label>
-      <input type="text" name="company" value="" />
-      <input type="submit" value="Go" />
-   </form>
-
-   <form action="IndividialInvestment.php" method="GET" name="invdividualInvestment">
-      <label>Show investment appreciation/depreciation for (individual): </label> 
-      <input type="text" name="individual" value=""/>
-      <input type="submit" value="Go" />
-   </form>
-
-   <form action="PortfolioInvestment.php" method="GET" name="portfolioInvestment">
-      <label> Show investment appreciation/depreciation for (portfolio):</label>
-      <input type="text" name="portfolio" value=""/>
-      <input type="submit" value="Go" />
-   </form>
-
-   <form action="ListCompanies.php" method="GET" name="listCompanies">
-      <label> Show list of Companies </label>
-      <input type ="text" name="company" value=""/>
-      <input type = "submit" value="Go" />
-   </form>
-
-   <form action="StockVolume.php" method="GET" name="stockVolume">
-      <label> Show stock volume for (company): </label>
-      <input type="text" name="company" value=""/>
-      <input type="submit" value="Go" />
-   </form>
-
-   <form action="IndividualInvested.php" method="GET" name="individualInvested">
-      <label> Show investments made for (individual): </label>
-      <input type="text" name="individual" value=""/>
-      <input type="submit" value="Go"/>
-   </form>
-
-   <form action="PortfolioInvested.php" method="GET" name="portfolioInvested">
-      <label> Show investments made for (individual): </label>
-      <input type="text" name="portfolio" value=""/>
-      <input type="submit" value="Go"/>
-   </form>
-
-   <form action="InvestmentsInCompany.php" method="GEt" name="investmentsCompany">
-      <label> Show all individuals/portfolios investments made for (company): </label>
-      <input type="text" name="investments" value=""/>
-      <input type="submit" value="Go"/>
-   </form>
-     
- </body>
+   </body>
 </html>
