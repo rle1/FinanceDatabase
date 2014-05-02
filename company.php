@@ -36,8 +36,8 @@
             <h2><b>LIST OF COMPANIES/STOCKS</b></h2>
             <hr>
                 <b>
-                    <form action="" method="GET" name="companyList">
-                        <input type = "submit" value="Generate List of Companies" /> &nbsp&nbsp <input type = "submit" value="Generate List of Stocks" />
+                    <form action="CompanyQuote.php" method="GET" name="companyList">
+                        <input type = "submit" value="Generate List of Companies/Stocks" /> 
                     </form>
                 </b>
             <hr>

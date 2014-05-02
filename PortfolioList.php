@@ -5,7 +5,6 @@
         <title>Finance/Stock Administrative System</title>
         <link rel="stylesheet" href="bootstrap.min.css">
         <link rel="stylesheet" href="pagelayout.css">
-
 	</head>
 	<body>
 		<!--NAVIGATION BAR-->
@@ -31,39 +30,37 @@
          </div>
       </div>
 
-		<div class="container content">
+
+       <div class="container content">
             <h2><b>LIST OF PORTFOLIOS</b></h2>
             <hr>
+	 		 <table class = "table table-striped">
+				<tr>
+					<th>Portfolio Name</th>
+				</tr>
+				<?php
+					$con = mysqli_connect("localhost", "user1", "pass1");
+		 		 	if(!$con){
+		 		 		exit('Connect Error (' . mysqli_connect_errno() . ')' . mysqli_connect_error());
+		 		 	}
 
- 		 <table class = "table table-striped">
-			<tr>
-				<th>Stock Name</th>
-				<th>Quote</th>
-			</tr>
-			<?php
-				$con = mysqli_connect("localhost", "user1", "pass1");
-	 		 	if(!$con){
-	 		 		exit('Connect Error (' . mysqli_connect_errno() . ')' . mysqli_connect_error());
-	 		 	}
+		 		 	mysqli_set_charset($con, 'utf-8');
+					
+					mysqli_select_db($con, "finance");
+					$result = mysqli_query($con, "SELECT * FROM portfolio");
 
-	 		 	mysqli_set_charset($con, 'utf-8');
-				
-				mysqli_select_db($con, "finance");
-				$result = mysqli_query($con, "SELECT * FROM company");
-
-				while($row = mysqli_fetch_array($result)){
-					echo "<tr><td>" . htmlentities($row["Name"]) . "</td>";
-					echo "<td>" . htmlentities($row["Stock_name"]) . "</td></tr>";
-				}
-				mysqli_free_result($result);
-				mysqli_close($con);
-			?>
-		</table>
-		<hr>
-		<form action="company.php" method="GET">
-			<input type = "Submit" value="Go Back" /> 
-		</form>
-		<hr>
- 		 </div>
+					while($row = mysqli_fetch_array($result)){
+						echo "<tr><td>" . htmlentities($row["Name"]) . "</td></tr>";
+					}
+					mysqli_free_result($result);
+					mysqli_close($con);
+				?>
+			</table>
+			<hr>
+				<form action="company.php" method="GET">
+					<input type = "Submit" value="Go Back" /> 
+				</form>
+			<hr>
+ 		</div>
 	</body>
 </html>

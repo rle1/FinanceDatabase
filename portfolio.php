@@ -36,7 +36,7 @@
             <h2><b>LIST OF PORTFOLIOS</b></h2>
             <hr>
                 <b>
-                    <form action="" method="GET" name="portfolioList">
+                    <form action="PortfolioList.php" method="GET" name="portfolioList">
                         <input type = "submit" value="Generate List of Portfolios" />
                     </form>
                 </b>
