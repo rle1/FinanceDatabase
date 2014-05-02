@@ -1,0 +1,17 @@
+body {
+    background-color: black;
+}
+
+.banner {
+    background-image: url('finance.jpg');
+    background-position: top;
+    color: white;
+}
+
+.content {
+    background-color: white;
+}
+
+.pad {
+    padding-left: 20px;
+}
