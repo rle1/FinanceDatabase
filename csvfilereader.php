@@ -41,10 +41,13 @@
 				$beingBought = $data[2];
 				$moneySpent = $data[3];
 				$date = $data[4];
-	    		$indQuery = "SELECT * FROM individual WHERE Name='$buyer'";
-				$portQuery = "SELECT * FROM portfolio WHERE Name='$buyer'";
+	    		$indQuery = mysqli_query($con, "SELECT * FROM individual WHERE Name='$buyer'");
+				$portQuery = mysqli_query($con, "SELECT * FROM portfolio WHERE Name='$buyer'");
+				
+				$row1 = $indQuery->fetch_assoc();
+				$row2 = $portQuery->fetch_assoc();
 				//Check if buyer is individual
-				if(mysqli_query($con, $indQuery)){
+				if(!empty($row1)){
 				
 					//Save individual's ID for storing
 					$indIDQuery = mysqli_query($con, "SELECT ID FROM individual WHERE Name='$buyer'");
@@ -54,7 +57,6 @@
 					$query = mysqli_query($con, "SELECT Cash FROM individual WHERE Name='$buyer'");
 					$row = $query->fetch_assoc();
 					$currCash = $row['Cash'];
-					echo "current cash: $currCash";
 			
 					//if($currCash-'data[3]' < 0){
 						//log error that individual does not have sufficient funds to invest
@@ -64,11 +66,13 @@
 					//update how much cash that individual has
 					mysqli_query($con, "UPDATE individual SET Cash='$newCash' WHERE Name='$buyer'");
 						
-					$stockQuery = "SELECT Stock_name FROM company WHERE Stock_name='$beingBought'";
-					$port2Query = "SELECT ID FROM portfolio WHERE Name='$beingBought'";
+					$stockQuery = mysqli_query($con, "SELECT Stock_name FROM company WHERE Stock_name='$beingBought'");
+					$port2Query = mysqli_query($con, "SELECT ID FROM portfolio WHERE Name='$beingBought'");
 					
+					$row1 = $stockQuery->fetch_assoc();
+					$row2 = $port2Query->fetch_assoc();
 					//See if buying company stock
-					if(mysqli_query($con, $stockQuery) != FALSE){
+					if(!empty($row1)){
 						
 						//Find Num_stocks value
 						$quoteQuery = mysqli_query($con, "SELECT Quote FROM quotes WHERE Date='$date' AND Stock_name='$beingBought'");
@@ -81,8 +85,7 @@
 						mysqli_query($con, "INSERT INTO individual_has_stocks (Individual_ID, Stock_name, Money_invested, Num_stocks) VALUES (\"$indID\", \"$data[2]\", \"$data[3]\", \"$stocks\")");
 						
 					//See if buying portfolio share
-					}else if(mysqli_query($con, $port2Query) != FALSE){
-						echo "GOT HERE";
+					}else if(!empty($row2)){
 						//Get portfolio ID
 						$portIDQuery= mysqli_query($con, "SELECT ID FROM portfolio WHERE Name='$beingBought'");
 						$row = $portIDQuery->fetch_assoc();
@@ -90,8 +93,38 @@
 						//update the list of portfolios the individual is invested in
 						mysqli_query($con, "INSERT INTO  individual_has_portfolios (Individual_ID, Portfolio_ID, Money_invested) VALUES (\"$indID\", \"$portID\", \"$moneySpent\")");
 					}
-				}else if(mysqli_query($con, $portQuery)){
+				}else if(!empty($row2)){
+					//Save portfolio's ID for storing
+					$portIDQuery = mysqli_query($con, "SELECT ID FROM portfolio WHERE Name='$buyer'");
+					$row = $portIDQuery->fetch_assoc();
+					$portID = $row['ID'];
 					
+					//Find portfolio's current cash amount
+					$query = mysqli_query($con, "SELECT Cash FROM portfolio WHERE Name='$buyer'");
+					$row = $query->fetch_assoc();
+					$currCash = $row['Cash'];
+					
+					$newCash = $currCash-(int)$data[3];
+					
+					//update how much cash that individual has
+					mysqli_query($con, "UPDATE portfolio SET Cash='$newCash' WHERE Name='$buyer'");
+					
+					//Find Num_stocks value
+					//echo $date;
+					//echo $beingBought;
+					$dateSplit = explode("/", $date);
+					$newDate = $dateSplit[2]."-".$dateSplit[0]."-".$dateSplit[1];
+					//echo $newDate;
+					$quoteQuery = mysqli_query($con, "SELECT Quote FROM quotes WHERE Date='$newDate' AND Stock_name='$beingBought'");
+					$row = $quoteQuery->fetch_assoc();
+					$quote = $row['Quote'];
+					//echo $quote;
+		
+					$stocks = (int)$data[3]/$quote;
+					
+					//update the list of companies the individual is invested in
+					mysqli_query($con, "INSERT INTO portfolio_has_stocks (Portfolio_ID, Stock_name, Money_invested, Num_stocks) VALUES (\"$portID\", \"$data[2]\", \"$data[3]\", \"$stocks\")");
+						
 				}
 				//mysqli_query($con, "");
 
