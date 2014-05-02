@@ -30,26 +30,20 @@
 			mysqli_select_db($con, "test_finance");
 			$stock_name = mysqli_real_escape_string($con, htmlentities($_GET["company"]));
 
-			//$company = mysqli_query("SELECT * FROM company WHERE stock_name = '" .$stock_name. "' ");
-			//$row = mysqli_fetch_row($company);
-			//$companyID = $row[0];
-			//mysqli_free_result($company);
-
 			//SELECT quote, stock_name FROM quote, company WHERE company = ? AND company.stock_name = quote.stock_name 
 
 			//$result = mysqli_query($con, "SELECT quote, stock_name FROM quote, company WHERE company.stock_name = quote.stock_name AND (");
  		 	$companies = $stock_name.explode(", ", $stock_name);
 
  		 	for(int i = 0; i < count($companies); i++){
- 		 		$result = $result . $companies[i];
+ 		 		$result = $result . "quote.stock_name = `" . $companies[i] ."`";
  		 		if(i != count($companies) - 1){
  		 			$result = $result ." OR "
  		 		}
  		 	}
 
  		 	$result = $result . ")"
-			
-
+		
  		 ?>
 
  		 <table border="black">
