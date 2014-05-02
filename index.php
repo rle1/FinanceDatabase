@@ -29,41 +29,50 @@
   </div><!-- .container -->
  
    <form action="CompanyQuote.php" method="GET" name="companyQuote">
-      Show info company's quote: <input type="text" name="company" value="" />
-         <input type="submit" value="Go" />
+      <label> Show info company's quote: </label>
+      <input type="text" name="company" value="" />
+      <input type="submit" value="Go" />
    </form>
 
    <form action="IndividialInvestment.php" method="GET" name="invdividualInvestment">
-      Show investment appreciation/depreciation for (individual): <input type="text" name="individual" value=""/>
+      <label>Show investment appreciation/depreciation for (individual): </label> 
+      <input type="text" name="individual" value=""/>
       <input type="submit" value="Go" />
    </form>
 
    <form action="PortfolioInvestment.php" method="GET" name="portfolioInvestment">
-       Show investment appreciation/depreciation for (portfolio): <input type="text" name="portfolio" value=""/>
+      <label> Show investment appreciation/depreciation for (portfolio):</label>
+      <input type="text" name="portfolio" value=""/>
       <input type="submit" value="Go" />
    </form>
 
    <form action="ListCompanies.php" method="GET" name="listCompanies">
-      Show list of Companies <input type = "submit" value="Go" />
+      <label> Show list of Companies </label>
+      <input type ="text" name="company" value=""/>
+      <input type = "submit" value="Go" />
    </form>
 
    <form action="StockVolume.php" method="GET" name="stockVolume">
-      Show stock volume for (company): <input type="text" name="company" value=""/>
+      <label> Show stock volume for (company): </label>
+      <input type="text" name="company" value=""/>
       <input type="submit" value="Go" />
    </form>
 
    <form action="IndividualInvested.php" method="GET" name="individualInvested">
-      Show investments made for (individual): <input type="text" name="individual" value=""/>
+      <label> Show investments made for (individual): </label>
+      <input type="text" name="individual" value=""/>
       <input type="submit" value="Go"/>
    </form>
 
    <form action="PortfolioInvested.php" method="GET" name="portfolioInvested">
-      Show investments made for (individual): <input type="text" name="portfolio" value=""/>
+      <label> Show investments made for (individual): </label>
+      <input type="text" name="portfolio" value=""/>
       <input type="submit" value="Go"/>
    </form>
 
    <form action="InvestmentsInCompany.php" method="GEt" name="investmentsCompany">
-      Show all individuals/portfolios investments made for (company): <input type="text" name="investments" value=""/>
+      <label> Show all individuals/portfolios investments made for (company): </label>
+      <input type="text" name="investments" value=""/>
       <input type="submit" value="Go"/>
    </form>
      
