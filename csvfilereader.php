@@ -71,7 +71,7 @@
 						$indPortRow = $indPort->fetch_assoc();
 						//grab all investments made by the portfolio
 						if(!empty($indPortRow)){
-							$investmentsQuery = mysqli_query($con, "SELECT Percentage FROM portfolio_has_stocks WHERE portfolio_ID='$portId'");
+							$investmentsQuery = mysqli_query($con, "SELECT Stock_name, Percentage FROM portfolio_has_stocks WHERE portfolio_ID='$portId'");
 							
 							$totalCashQuery = mysqli_query($con, "SELECT Total_cash FROM portfolio WHERE ID='$portID'");
 							$row = $totalCashQuery->fetch_assoc();
@@ -82,12 +82,29 @@
 							$investPercentage = 0.0;
 
 							while($row = mysqli_fetch_array($investmentsQuery)){
+								$stock = $row['Stock_name'];
 								$percentage = $row['Percentage'];
+
+
+								$currentQuote = mysqli_query($con, "SELECT Quote From quotes WHERE Date='$newDate' AND Stock_name='$stock'");
+								$row = $currentQuote->fetch_assoc();
+								$sellQuote = $row['Quote'];
+
+								$buyDate = mysqli_query($con, "SELECT Date FROM portfolio_act_stocks WHERE Portfolio_ID = '$portID' AND Stock_name='$stock' AND Buy_or_sell='B'");
+								$dateRow = $buyDate->fetch_assoc();
+								$date = $dateRow['Date'];
+
+								$prevQuote = mysqli_query($con, "SELECT Quote FROM quotes WHERE Date = '$date' AND Stock_name = '$stock'");
+								$row = $prevQuote->fetch_assoc();
+								$buyQuote = $row['Quote'];
+
+								$appFactor = (double)$sellQuote / (double)$buyQuote 
+
 								$investPercentage = (double)$percentage + $investPercentage;
 
 								$cash = (double)$totalCash * (double) $percentage;
 
-								$totalFundValue = (double)$totalFundValue +  (double)($cash);
+								$totalFundValue = (double)$totalFundValue + ((double)$cash * (double)$appFactor);
 							}
 
 							$totalFundValue = (double) $totalFundValue + ((double)$totalCash * (1.0 - (double)investPercentage));
@@ -149,7 +166,7 @@
 
 						$returnCash = (double)$totalCash * (double)$percentage * (double)$appFactor;
 						
-						$totalCash = ((double)$totalCash + ((double)$returnCash/(double)$appFactor)); 
+						$totalCash = ((double)$totalCash - ((double)$returnCash/(double)$appFactor)) + $(double) $returnCash; 
 						
 						$currentCash = $currentCash + $returnCash;
 
@@ -249,7 +266,7 @@
 
 	    	} else if($data[0] == "sellbuy"){
 	    		//mysqli_query($con, "");
-
+	    		
 
 
 	    	} else if($data[0] ==  "individual"){
