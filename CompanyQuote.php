@@ -32,7 +32,7 @@
       </div>
 
 		<div class="container content">
-            <h2><b>LIST OF COMPANIES</b></h2>
+            <h2><b>LIST OF PORTFOLIOS</b></h2>
             <hr>
 
  		 <table class = "table table-striped">
