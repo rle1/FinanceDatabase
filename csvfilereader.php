@@ -66,10 +66,56 @@
 					}else if(!empty($portRow)){
 						//query current appreciation for portfolio
 						//update individual's cash with investment multiplied by appreciation
-					}
+
 				//Check if seller is a portfolio
 				}else if(!empty($row2)){
 					//query ALL the companies' stock appreciation that the portfolio was invested in.
+					
+						$portID = $row2['ID'];
+
+						$stockQuery = mysqli_query($con, "SELECT * FROM company WHERE Name = '$gettingSold'");
+
+						$stockRow = $stockQuery->fetch_assoc();
+						if(!empty($stockRow)){
+							//port id, stock_name, percent_invested(invested / how much they have at the time)
+							$stockPercentageQuery = mysqli_query($con, "SELECT Percentage FROM portfolio_has_stocks WHERE Portfolio_ID='$portID'");
+							$stockPercentageRow = $stockPercentageQuery->fetch_assoc();
+							$percentage = $stockPercentageRow['percentage'];
+
+							$currentQuote = mysqli_query($con, "SELECT Quote From quotes WHERE Date='$newDate' AND Stock_name='$gettingSold'");
+							$row = $currentQuote->fetch_assoc();
+							$sellQuote = $row['Quote'];
+
+							$buyDate = mysqli_query($con, "SELECT Date FROM portfolio_act_stocks WHERE Portfolio_ID = '$portID' AND Stock_name='$gettingSold'");
+							$dateRow = $buyDate->fetch_assoc();
+							$date = $dateRow['Date'];
+
+							$prevQuote = mysqli_query($con, "SELECT Quote FROM quotes WHERE Date = 'date' AND Stock_name = '$gettingSold'");
+							$row = $prevQuote->fetch_assoc();
+							$buyQuote = $row['Quote'];
+
+							//appreciation factor - sell/buy quote
+							//appreciation factor * (percent invested into stock * totalCash)
+							$totalCashQuery =mysqli_query($con, "SELECT TotalCash FROM portfolio WHERE Portfolio_ID='$portID'");
+							$row = $totalCashQuery->fetch_assoc();
+							$totalCash = $totalCashQuery['TotalCash'];
+
+							$currentCashQuery = mysqli_query($con, "SELECT CurrentCash FROM portfolio WHERE Portfolio_ID='$portID'");
+							$row = $currentCashQuery->fetch_assoc();
+							$currentCash = $row['CurrentCash'];
+
+							$returnCash = (double)$totalCash * (double)$percentage * ((double)$sellQuote/(double)$buyQuote);
+							
+							$totalCash = (double)$returnCash + ((double)$totalCash - ((double)$totalCash * (double)$percentage)); 
+							
+							$currentCash = $currentCash + $returnCash;
+
+							mysqli_query($con, "UPDATE portfolio SET CurrentCash='$currentCash' WHERE Portfolio_ID='$portID'");
+							mysqli_query($con, "UPDATE portfolio SET TotalCash='$totalCash' WHERE Portfolio_ID='$portID'");
+
+							mysqli_query($con, "DELETE FROM portfolio_has_stocks WHERE Portfolio_ID='$portID' AND Stock_name='$gettingSold'");
+						}
+					}
 				}
 
 	    	} else if($data[0] == "buy"){
