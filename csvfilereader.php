@@ -19,28 +19,69 @@
 
 	    while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
 	    	if($data[0] == "sell"){
-				/*$indQuery = "SELECT * FROM individual WHERE Name='data[1]'";
-				$portQuery = "SELECT * FROM portfolio WHERE Name='data[1]'";
-				if(mysqli_query($con, $indQuery){
-					$stockQuery = "SELECT * FROM company WHERE Stock_name='data[2]'";
-					$port2Query = "SELECT * FROM portfolio WHERE Name='data[2]'";
-					if(mysqli_query($con, $stockQuery){
+				$seller = $data[1];
+				$gettingSold = $data[2];
+				$date = $data[3];
+				$dateSplit = explode("/", $date);
+				$newDate = $dateSplit[2]."-".$dateSplit[0]."-".$dateSplit[1];
+				
+				$indQuery = mysqli_query($con, "SELECT * FROM individual WHERE Name='$seller'");
+				$portQuery = mysqli_query($con, "SELECT * FROM portfolio WHERE Name='$seller'");
+				
+				$row1 = $indQuery->fetch_assoc();
+				$row2 = $portQuery->fetch_assoc();
+				//Check if seller is individual
+				if(!empty($row1)){
+					//$indRow = $indQuery->fetch_assoc();
+					$indID = $row1['ID'];
+					//echo "$indID<br>";
+					$stockQuery = mysqli_query($con, "SELECT * FROM company WHERE Stock_name='$gettingSold'");
+					$port2Query = mysqli_query($con, "SELECT * FROM portfolio WHERE Name='$gettingSold'");
+					
+					$stockRow = $stockQuery->fetch_assoc();
+					$portRow = $portQuery->fetch_assoc();
+					//Check if gettingSold is a company's stock
+					if(!empty($stockRow)){
+						//get number of stocks individual has in company
+						//echo "GOT HERE<br>";
+						$stockNumQuery = mysqli_query($con, "SELECT Num_stocks FROM individual_has_stocks WHERE Individual_ID='$indID'");
+						$stockNumRow = $stockNumQuery->fetch_assoc();
+						$numStocks = $stockNumRow['Num_stocks'];
+						//echo "$numStocks<br>";
 						//query current appreciation for company's stock
+						$quoteQuery = mysqli_query($con, "SELECT Quote FROM quotes WHERE Date='$newDate' AND Stock_name='$gettingSold'");
+						$row = $quoteQuery->fetch_assoc();
+						$quote = $row['Quote'];
+						//echo "$quote<br>";
 						//update individual's cash with investment multiplied by appreciation
-					}else if(mysqli_query($con, $port2Query){
+						$moneyMade = $quote*(int)$numStocks;
+						//echo "$moneyMade<br>";
+						$currMoney = $row1['Cash'];
+						//echo "$currMoney<br>";
+						$totalMoney = $currMoney+$moneyMade;
+						//echo "$totalMoney<br>";
+						mysqli_query($con, "UPDATE individual SET Cash='$totalMoney' WHERE Name='$seller'"); //MIGHT NOT WORK
+						//remove ind-comp relationship from individual_has_stocks table
+						mysqli_query($con, "DELETE FROM individual_has_stocks WHERE Individual_ID='$indID' AND Stock_name='$gettingSold'");
+					}else if(!empty($portRow)){
 						//query current appreciation for portfolio
 						//update individual's cash with investment multiplied by appreciation
 					}
-				}else if(mysqli_query($con), $portQuery){
+				//Check if seller is a portfolio
+				}else if(!empty($row2)){
 					//query ALL the companies' stock appreciation that the portfolio was invested in.
 				}
-	    		//mysqli_query($con, "");*/
+	    		//mysqli_query($con, "");
 
 	    	} else if($data[0] == "buy"){
 				$buyer = $data[1];
 				$beingBought = $data[2];
 				$moneySpent = $data[3];
 				$date = $data[4];
+				
+				$dateSplit = explode("/", $date);
+				$newDate = $dateSplit[2]."-".$dateSplit[0]."-".$dateSplit[1];
+				
 	    		$indQuery = mysqli_query($con, "SELECT * FROM individual WHERE Name='$buyer'");
 				$portQuery = mysqli_query($con, "SELECT * FROM portfolio WHERE Name='$buyer'");
 				
@@ -75,12 +116,12 @@
 					if(!empty($row1)){
 						
 						//Find Num_stocks value
-						$quoteQuery = mysqli_query($con, "SELECT Quote FROM quotes WHERE Date='$date' AND Stock_name='$beingBought'");
+						$quoteQuery = mysqli_query($con, "SELECT Quote FROM quotes WHERE Date='$newDate' AND Stock_name='$beingBought'");
 						$row = $quoteQuery->fetch_assoc();
 						$quote = $row['Quote'];
 						echo $quote;
 		
-						$stocks = (int)$data[3]/$quote;
+						$stocks = (int)$moneySpent/$quote;
 						//update the list of companies the individual is invested in
 						mysqli_query($con, "INSERT INTO individual_has_stocks (Individual_ID, Stock_name, Money_invested, Num_stocks) VALUES (\"$indID\", \"$data[2]\", \"$data[3]\", \"$stocks\")");
 						
@@ -112,8 +153,8 @@
 					//Find Num_stocks value
 					//echo $date;
 					//echo $beingBought;
-					$dateSplit = explode("/", $date);
-					$newDate = $dateSplit[2]."-".$dateSplit[0]."-".$dateSplit[1];
+					//$dateSplit = explode("/", $date);
+					//$newDate = $dateSplit[2]."-".$dateSplit[0]."-".$dateSplit[1];
 					//echo $newDate;
 					$quoteQuery = mysqli_query($con, "SELECT Quote FROM quotes WHERE Date='$newDate' AND Stock_name='$beingBought'");
 					$row = $quoteQuery->fetch_assoc();
