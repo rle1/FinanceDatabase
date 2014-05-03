@@ -71,24 +71,26 @@
 						$indPortRow = $indPort->fetch_assoc();
 						//grab all investments made by the portfolio
 						if(!empty($indPortRow)){
-							$investmentsQuery = mysqli_query($con, "SELECT Stock_name, Percentage FROM portfolio_has_stocks WHERE portfolio_ID='$portId'");
+							$investmentsQuery = mysqli_query($con, "SELECT Percentage FROM portfolio_has_stocks WHERE portfolio_ID='$portId'");
 							
 							$totalCashQuery = mysqli_query($con, "SELECT Total_cash FROM portfolio WHERE ID='$portID'");
 							$row = $totalCashQuery->fetch_assoc();
 							$totalCash = $row['Total_cash'];
 
-							$currentCashQuery = mysqli_query($con, "SELECT Curr_cash FROM portfolio WHERE ID='$portID'");
-							$row = $currentCashQuery->fetch_assoc();
-							$totalFundValue = 0.0 + ((double) $row['Curr_cash']);
 							
+							$totalFundValue = 0.0;
+							$investPercentage = 0.0;
+
 							while($row = mysqli_fetch_array($investmentsQuery)){
-								$stock = $row['Stock_name'];
 								$percentage = $row['Percentage'];
-								
+								$investPercentage = (double)$percentage + $investPercentage;
+
 								$cash = (double)$totalCash * (double) $percentage;
 
 								$totalFundValue = (double)$totalFundValue +  (double)($cash);
 							}
+
+							$totalFundValue = (double) $totalFundValue + ((double)$totalCash * (1.0 - (double)investPercentage));
 
 							$indInvestPortQuery = mysqli_query($con, "SELECT Money_invested FROM individual_has_portfolios WHERE Individual_ID='$indID' AND Portfolio_ID='$portID'");
 							$row = $indInvestPortQuery->fetch_assoc();
@@ -104,7 +106,6 @@
 
 							$finalCash = (double) $indCash + (double) $returnCash;
 							mysqli_query($con, "UPDATE individual SET Cash='$finalCash' WHERE ID='$indID'");
-
 						}
 					}
 				//Check if seller is a portfolio
@@ -248,6 +249,8 @@
 
 	    	} else if($data[0] == "sellbuy"){
 	    		//mysqli_query($con, "");
+
+
 
 	    	} else if($data[0] ==  "individual"){
 				$indName = $data[1];
