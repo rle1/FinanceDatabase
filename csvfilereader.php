@@ -7,7 +7,7 @@
  <body>
  	<?php
 
-	if (($handle = fopen("book1.csv", "r")) !== FALSE) {
+	if (($handle = fopen("script4.csv", "r")) !== FALSE) {
 
 		$con = mysqli_connect("localhost", "user1", "pass1");
 				if (!$con) {
@@ -21,9 +21,9 @@
 	    	if($data[0] == "sell"){
 				$seller = $data[1];
 				$gettingSold = $data[2];
-				$date = $data[3];
-				$dateSplit = explode("/", $date);
-				$newDate = $dateSplit[2]."-".$dateSplit[0]."-".$dateSplit[1];
+				$newDate = $data[3];
+				//$dateSplit = explode("/", $date);
+				//$newDate = $dateSplit[2]."-".$dateSplit[0]."-".$dateSplit[1];
 				
 				$indQuery = mysqli_query($con, "SELECT * FROM individual WHERE Name='$seller'");
 				$portQuery = mysqli_query($con, "SELECT * FROM portfolio WHERE Name='$seller'");
@@ -213,10 +213,11 @@
 				$buyer = $data[1];
 				$beingBought = $data[2];
 				$moneySpent = $data[3];
-				$date = $data[4];
+				$newDate = $data[4];
 				
-				$dateSplit = explode("/", $date);
-				$newDate = $dateSplit[2]."-".$dateSplit[0]."-".$dateSplit[1];
+				//$dateSplit = explode("-", $date);
+				//echo $date;
+				//$newDate = $dateSplit[2]."-".$dateSplit[0]."-".$dateSplit[1];
 				
 				
 				
@@ -230,7 +231,7 @@
 					$indID = $row1['ID'];
 					$currCash = $row1['Cash'];
 		
-					$newCash = $currCash-(int)$moneySpent; //POSSIBLY error check for going below 0
+					$newCash = $currCash-(int)$moneySpent; 
 
 					if($newCash <= 0){
 						continue;
@@ -281,7 +282,7 @@
 						
 						echo "updating $beingBought ($portID) total value to $newPortTMoney and current cash amount to $newPortCMoney<br>";
 						mysqli_query($con, "UPDATE portfolio SET Total_cash='$newPortTMoney', Curr_cash='$newPortCMoney' WHERE ID='$portID'");
-						echo "logging $buyer ($indID) buying $beingBought ($portID);
+						echo "logging $buyer ($indID) buying $beingBought ($portID)";
 						mysqli_query($con, "INSERT INTO individual_act_portfolios (Individual_ID, Portfolio_ID, Buy_or_sell, Date) VALUES (\"$indID\", \"$portID\", \"B\", \"$newDate\")");	
 					}
 				}else if(!empty($row2)){
@@ -309,10 +310,10 @@
 				$seller = $data[1];
 				$selling = $data[2];
 				$buying = $data[3];
-				$date = $data[4];
+				$newDate = $data[4];
 				
-				$dateSplit = explode("/", $date);
-				$newDate = $dateSplit[2]."-".$dateSplit[0]."-".$dateSplit[1];
+				//$dateSplit = explode("/", $date);
+				//$newDate = $dateSplit[2]."-".$dateSplit[0]."-".$dateSplit[1];
 				
 				$indQueryCheck = mysqli_query($con, "SELECT * FROM individual WHERE Name='$seller'");
 				$portQueryCheck = mysqli_query($con, "SELECT * FROM portfolio WHERE Name='$seller'");
@@ -403,7 +404,7 @@
 						$indPort = mysqli_query($con, "SELECT * FROM individual_has_portfolios WHERE Individual_ID='$indID' AND Portfolio_ID='$portID'");
 						$indPortRow = $indPort->fetch_assoc();
 						//grab all investments made by the portfolio
-						if(!empty($indPortRow)){
+						
 							$investmentsQuery = mysqli_query($con, "SELECT Stock_name, percent_invested FROM portfolio_has_stocks WHERE Portfolio_ID='$portID'");
 
 							$totalCashQuery = mysqli_query($con, "SELECT * FROM portfolio WHERE ID='$portID'");
@@ -450,8 +451,8 @@
 								$moneyInvested = $totalCash * $percentage;
 
 								$totalFundValue = $totalFundValue + ($moneyInvested * $appFactor);
+							
 							}
-
 							$totalFundValue = $totalFundValue + ($totalCash * (1.0 - $totalPortInvestment));
 
 							$indInvestPortQuery = mysqli_query($con, "SELECT Money_invested FROM individual_has_portfolios WHERE Individual_ID='$indID' AND Portfolio_ID='$portID'");
@@ -467,7 +468,7 @@
 							$indCash = $row['Cash'];
 
 							$finalCash = $indCash + $returnCash;
-						}
+						
 						$buyingStockQuery = mysqli_query($con, "SELECT * FROM company WHERE Stock_name='$buying'");
 						$buyingPortQuery = mysqli_query($con, "SELECT * FROM portfolio WHERE Name='$buying'");
 						
@@ -505,7 +506,6 @@
 						mysqli_query($con, "DELETE FROM individual_has_portfolios WHERE Individual_ID='$indID' AND Portfolio_ID='$portID'");
 					}
 				}else if(!empty($portRowCheck)){
-					echo "seller is a portfolio<br>";
 					$portID = $portRowCheck['ID'];
 					
 					//find percent portfolio invested into company
