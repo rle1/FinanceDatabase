@@ -50,6 +50,9 @@
 						$stockNumQuery = mysqli_query($con, "SELECT Num_stocks FROM individual_has_stocks WHERE Individual_ID='$indID'");
 						$stockNumRow = $stockNumQuery->fetch_assoc();
 						$numStocks = $stockNumRow['Num_stocks'];
+						if(empty($stockNumRow) || $numStocks <= 0){
+							continue;
+						}
 						
 						//query current appreciation for company's stock
 						$quoteQuery = mysqli_query($con, "SELECT Quote FROM quotes WHERE Date='$newDate' AND Stock_name='$gettingSold'");
@@ -63,6 +66,10 @@
 						$moneyMade = $quote*(int)$numStocks;
 						$currMoney = $row1['Cash'];
 						$totalMoney = $currMoney+$moneyMade;
+
+						if($totalMoney < 0){
+							continue;
+						}
 						
 						mysqli_query($con, "UPDATE individual SET Cash='$totalMoney' WHERE Name='$seller'");
 						
@@ -99,14 +106,30 @@
 								$currentQuote = mysqli_query($con, "SELECT Quote From quotes WHERE Date='$newDate' AND Stock_name='$stock'");
 								$row = $currentQuote->fetch_assoc();
 								$sellQuote = $row['Quote'];
+									/************************************************************************************************
+						not sure if we should check if buyQuote or sellQuote is zero
+					**************************************************************************************************/
+								if(empty($row) || $sellQuote <=0){
+									continue;
+								}
 
 								$buyDateQuery = mysqli_query($con, "SELECT Date FROM portfolio_act_stocks WHERE Portfolio_ID = '$portID' AND Stock_name='$stock' AND Buy_or_sell='B'");
 								$dateRow = $buyDateQuery->fetch_assoc();
 								$buyDate = $dateRow['Date'];
 
+								if(empty($dateRow)){
+									continue;
+								}
+
 								$prevQuote = mysqli_query($con, "SELECT Quote FROM quotes WHERE Date = '$buyDate' AND Stock_name = '$stock'");
 								$row = $prevQuote->fetch_assoc();
 								$buyQuote = $row['Quote'];
+									/************************************************************************************************
+						not sure if we should check if buyQuote or sellQuote is zero
+					**************************************************************************************************/
+								if(empty($row) || $buyQuote <= 0){
+									continue;
+								}
 
 								$appFactor = $sellQuote / $buyQuote;
 
@@ -159,6 +182,9 @@
 					$currentQuote = mysqli_query($con, "SELECT Quote FROM quotes WHERE Date='$newDate' AND Stock_name='$gettingSold'");
 					$row = $currentQuote->fetch_assoc();
 					$sellQuote = $row['Quote'];
+						/************************************************************************************************
+						not sure if we should check if buyQuote or sellQuote is zero
+					**************************************************************************************************/
 					if($sellQuote == 0){
 						echo "no quote exists<br>";
 						continue;
@@ -169,10 +195,20 @@
 					$dateRow = $buyDateQuery->fetch_assoc();
 					$buyDate = $dateRow['Date'];
 
+					if(empty($dateRow)){
+						continue;
+					}
+
 					//find quote on date portfolio bought stock
 					$prevQuote = mysqli_query($con, "SELECT Quote FROM quotes WHERE Date = '$buyDate' AND Stock_name = '$gettingSold'");
 					$row = $prevQuote->fetch_assoc();
-					$buyQuote = $row['Quote'];
+					$buyQuote = $row['Quote'];	
+						/************************************************************************************************
+						not sure if we should check if buyQuote or sellQuote is zero
+					**************************************************************************************************/
+					if(empty($row) || $buyQuote <= 0){
+						continue;
+					}
 
 					//appreciation factor - sell/buy quote
 					$appFactor = $sellQuote/$buyQuote;
@@ -220,6 +256,11 @@
 					$currCash = $row1['Cash'];
 		
 					$newCash = $currCash-(int)$moneySpent; //POSSIBLY error check for going below 0
+
+					if($newCash <= 0){
+						continue;
+					}
+					
 					
 					//update how much cash that individual has
 					echo "updating how much cash $buyer ($indID) has to $newCash<br>";
@@ -238,7 +279,7 @@
 						$quoteQuery = mysqli_query($con, "SELECT Quote FROM quotes WHERE Date='$newDate' AND Stock_name='$beingBought'");
 						$row = $quoteQuery->fetch_assoc();
 						$quote = $row['Quote'];
-						if($quote == 0){
+						if($quote == 0 || empty($row)){
 							continue;
 						}
 		
@@ -318,12 +359,19 @@
 						$stockNumQuery = mysqli_query($con, "SELECT Num_stocks FROM individual_has_stocks WHERE Individual_ID='$indID'");
 						$stockNumRow = $stockNumQuery->fetch_assoc();
 						$numStocks = $stockNumRow['Num_stocks'];
+
+						if($numStocks <= 0 || empty($stockNumRow){
+							continue;
+						}
 						
 						//query current appreciation for company's stock
 						$quoteQuery = mysqli_query($con, "SELECT Quote FROM quotes WHERE Date='$newDate' AND Stock_name='$selling'");
 						$row = $quoteQuery->fetch_assoc();
 						$quote = $row['Quote'];
-						if($quote == 0){
+							/************************************************************************************************
+						not sure if we should check if buyQuote or sellQuote is zero
+					**************************************************************************************************/
+						if($quote == 0 || empty($row)){
 							continue;
 						}
 						
@@ -331,6 +379,13 @@
 						$buyingQuery = mysqli_query($con, "SELECT Quote FROM quotes WHERE Date='$newDate' AND Stock_name='$buying'");
 						$buyingRow = $buyingQuery->fetch_assoc();
 						$buyingQuote = $buyingRow['Quote'];
+							/************************************************************************************************
+						not sure if we should check if buyQuote or sellQuote is zero
+					**************************************************************************************************/
+						if(empty($buyingQuote) || $buying <=0){
+							continue;
+						}
+
 						
 						$moneyMade = $quote*(int)$numStocks;
 						$newStockNum = $moneyMade/$buyingQuote;
@@ -391,14 +446,31 @@
 								$currentQuote = mysqli_query($con, "SELECT Quote From quotes WHERE Date='$newDate' AND Stock_name='$stock'");
 								$row = $currentQuote->fetch_assoc();
 								$sellQuote = $row['Quote'];
+									/************************************************************************************************
+						not sure if we should check if buyQuote or sellQuote is zero
+					**************************************************************************************************/
+								if(empty($row) || $sellQuote <=0){
+									continue;
+								}
 
 								$buyDateQuery = mysqli_query($con, "SELECT Date FROM portfolio_act_stocks WHERE Portfolio_ID = '$portID' AND Stock_name='$stock' AND Buy_or_sell='B'");
 								$dateRow = $buyDateQuery->fetch_assoc();
 								$buyDate = $dateRow['Date'];
 
+								if(empty($dateRow)){
+									continue;
+								}
+
 								$prevQuote = mysqli_query($con, "SELECT Quote FROM quotes WHERE Date = '$buyDate' AND Stock_name = '$stock'");
 								$row = $prevQuote->fetch_assoc();
 								$buyQuote = $row['Quote'];
+									/************************************************************************************************
+						not sure if we should check if buyQuote or sellQuote is zero
+					**************************************************************************************************/
+								if(empty($row) || $buyQuote <= 0){
+									continue;
+								}
+								
 
 								$appFactor = $sellQuote / $buyQuote;
 
@@ -469,12 +541,19 @@
 					$stockPercentageQuery = mysqli_query($con, "SELECT percent_invested FROM portfolio_has_stocks WHERE Portfolio_ID='$portID' AND Stock_name='$selling'");
 					$stockPercentageRow = $stockPercentageQuery->fetch_assoc();
 					$percentInvested = $stockPercentageRow['percent_invested'];
+
+					if($percentInvested <= 0 || empty($stockPercentageRow)){
+						continue;
+					}
 					
 					//find quote at time of selling
 					$currentQuote = mysqli_query($con, "SELECT Quote FROM quotes WHERE Date='$newDate' AND Stock_name='$selling'");
 					$row = $currentQuote->fetch_assoc();
 					$sellQuote = $row['Quote'];
-					if(empty($row)){
+					/************************************************************************************************
+						not sure if we should check if buyQuote or sellQuote is zero
+					**************************************************************************************************/
+					if(empty($row) || $sellQuote <=0){
 						continue;
 					}
 					
@@ -482,11 +561,21 @@
 					$buyDateQuery = mysqli_query($con, "SELECT Date FROM portfolio_act_stocks WHERE Portfolio_ID = '$portID' AND Stock_name='$selling' AND Buy_or_sell='B'");
 					$dateRow = $buyDateQuery->fetch_assoc();
 					$buyDate = $dateRow['Date'];
+
+					if(empty($dateRow)){
+						continue;
+					}
 					
 					//find quote on date portfolio bought stock
 					$prevQuote = mysqli_query($con, "SELECT Quote FROM quotes WHERE Date = '$buyDate' AND Stock_name = '$selling'");
 					$row = $prevQuote->fetch_assoc();
 					$buyQuote = $row['Quote'];
+					/************************************************************************************************
+						not sure if we should check if buyQuote or sellQuote is zero
+					**************************************************************************************************/
+					if(empty($row) || $buyQuote <=0){
+						continue;
+					}
 					
 					$totalCash = $portRowCheck['Total_cash'];
 					
