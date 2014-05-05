@@ -1,0 +1,34 @@
+error checking 
+-sell
+	if the quotes are zero continue with the rest of portfolios investments
+	if the buy quote is zero in the portfolio buying stocks -> appreciation factor cannot divide 0
+	if percent invested is zero
+-buy
+	they do not have enough cash to buy
+
+-sellbuy
+	selling stock and then losing money where their current money goes to zero or the total money in the end of the selling process is zero or below
+	if percent invest is zero
+
+Assumptions
+	-skipping dates that are out of range
+	-skipping logs that involve buying stock or funds with 0 money
+	-skipping quotes that don't exist on a particular day
+	-skipping logs where there are insufficient funds
+	-in sellbuy, we take the money earned plus intial investment and transfer it over
+	-assuming total returns is the amount of cash that an individual whereas net worth is all the individual's assets
+	-for final net worth, we're using 12-31-2013 as our date if they were hypothetically selling out their stock
+	-if indvidual or portfolios returns are negative, we are assuming that their money is withheld inside investments because they were not able to sell due to invalid dates for quotes/havent' sold.
+
+
+$quoteQuery = mysqli_query($con, "SELECT Quote FROM quotes WHERE Date='$newDate' AND Stock_name='$beingBought'");
+					$row = $quoteQuery->fetch_assoc();
+					$quote = $row['Quote'];
+
+					if($quote == 0 || empty($row)){
+						continue;
+					}
+
+					if($returnCash < $quote){
+						continue;
+					}
