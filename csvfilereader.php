@@ -7,7 +7,7 @@
  <body>
  	<?php
 
-	if (($handle = fopen("script1.csv", "r")) !== FALSE) {
+	if (($handle = fopen("script4.csv", "r")) !== FALSE) {
 
 		$con = mysqli_connect("localhost", "user1", "pass1");
 				if (!$con) {
@@ -22,12 +22,8 @@
 				$seller = $data[1];
 				$gettingSold = $data[2];
 				$newDate = $data[3];
-			
-				$dateSplit = explode("-", $newDate);
-				$year = intval($dateSplit[0]);
-				if($year < 2005 || $year > 2013){
-					continue;
-				}
+				//$dateSplit = explode("/", $date);
+				//$newDate = $dateSplit[2]."-".$dateSplit[0]."-".$dateSplit[1];
 				
 				$indQuery = mysqli_query($con, "SELECT * FROM individual WHERE Name='$seller'");
 				$portQuery = mysqli_query($con, "SELECT * FROM portfolio WHERE Name='$seller'");
@@ -244,11 +240,9 @@
 				$moneySpent = $data[3];
 				$newDate = $data[4];
 				
-				$dateSplit = explode("-", $newDate);
-				$year = intval($dateSplit[0]);
-				if($year < 2005 || $year > 2013){
-					continue;
-				}
+				//$dateSplit = explode("-", $date);
+				//echo $date;
+				//$newDate = $dateSplit[2]."-".$dateSplit[0]."-".$dateSplit[1];
 				
 				
 				
@@ -343,11 +337,8 @@
 				$buying = $data[3];
 				$newDate = $data[4];
 				
-				$dateSplit = explode("-", $newDate);
-				$year = intval($dateSplit[0]);
-				if($year < 2005 || $year > 2013){
-					continue;
-				}
+				//$dateSplit = explode("/", $date);
+				//$newDate = $dateSplit[2]."-".$dateSplit[0]."-".$dateSplit[1];
 				
 				$indQueryCheck = mysqli_query($con, "SELECT * FROM individual WHERE Name='$seller'");
 				$portQueryCheck = mysqli_query($con, "SELECT * FROM portfolio WHERE Name='$seller'");
