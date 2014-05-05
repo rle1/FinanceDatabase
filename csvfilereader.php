@@ -211,19 +211,6 @@
 
 					$returnCash = ($moneyInvested)*$appFactor;
 
-					$quoteQuery = mysqli_query($con, "SELECT Quote FROM quotes WHERE Date='$newDate' AND Stock_name='$beingBought'");
-					$row = $quoteQuery->fetch_assoc();
-					$quote = $row['Quote'];
-
-					if($quote == 0 || empty($row)){
-						continue;
-					}
-
-					if($returnCash < $quote){
-						continue;
-					}
-
-
 					$totalCash = ($totalCash - ($returnCash/$appFactor)) + $returnCash; 
 
 					$currentCash = $currentCash + $returnCash;
