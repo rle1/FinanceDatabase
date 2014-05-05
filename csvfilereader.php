@@ -274,6 +274,10 @@
 						if($quote == 0 || empty($row)){
 							continue;
 						}
+
+						if($moneySpent < $quote){
+							continue;
+						}
 		
 						$stocks = (int)$moneySpent/$quote;
 						
@@ -305,6 +309,22 @@
 					$portID = $row2['ID'];
 					$currCash = $row2['Curr_cash'];
 					$newCash = $currCash-(double)$moneySpent;
+
+					if($newCash < 0){
+						continue;
+					}
+
+					$quoteQuery = mysqli_query($con, "SELECT Quote FROM quotes WHERE Date='$newDate' AND Stock_name='$beingBought'");
+					$row = $quoteQuery->fetch_assoc();
+					$quote = $row['Quote'];
+
+					if($quote == 0 || empty($row)){
+						continue;
+					}
+
+					if($moneySpent < $quote){
+						continue;
+					}
 					
 					//update how much cash that portfolio has
 					echo "update $buyer 's ($portID) current cash amount to $newCash<br>";
@@ -380,9 +400,11 @@
 						if(empty($buyingQuote) || $buying <=0){
 							continue;
 						}
-
 						
 						$moneyMade = $quote*(int)$numStocks;
+						if($moneyMade < $buyingQuote){
+							continue;
+						}
 						$newStockNum = $moneyMade/$buyingQuote;
 						
 						$buyingStockQuery = mysqli_query($con, "SELECT * FROM company WHERE Stock_name='$buying'");
@@ -499,6 +521,10 @@
 							$buyingQuoteQuery = mysqli_query($con, "SELECT Quote FROM quotes WHERE Stock_name='$buying' AND Date='$newDate'");
 							$buyingQuoteRow = $buyingQuoteQuery->fetch_assoc();
 							$buyingQuote = $buyingQuoteRow['Quote'];
+							if(empty($row) || $buyingQuote <= 0 || $returnCash < $buyingQuote){
+								continue;
+							}
+
 							$boughtStockNum = $returnCash/$buyingQuote;
 							
 							echo "adding new relationship between $seller ($indID) and $buying. Invested $returnCash dollars and bought $boughtStockNum stocks<br>";
@@ -571,7 +597,19 @@
 					$moneyInvested = $totalCash*$percentInvested;
 
 					$returnCash = ($moneyInvested)*$appFactor;
-					
+
+					$quoteQuery = mysqli_query($con, "SELECT Quote FROM quotes WHERE Date='$newDate' AND Stock_name='$beingBought'");
+					$row = $quoteQuery->fetch_assoc();
+					$quote = $row['Quote'];
+
+					if($quote == 0 || empty($row)){
+						continue;
+					}
+
+					if($returnCash < $quote){
+						continue;
+					}
+
 					$totalCash = ($totalCash - ($returnCash/$appFactor)) + $returnCash;
 
 					$percentOfNewComp = $returnCash/$totalCash;
