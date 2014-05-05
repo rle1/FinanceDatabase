@@ -637,10 +637,10 @@
 				$indName = $data[1];
 				$indCash = $data[2];
 				
-				$insertQuery = "INSERT INTO individual (Name, Cash) VALUES (\"$indName\", \"$indCash\")";
+				$insertQuery = "INSERT INTO individual (Name, Cash, starting_funds) VALUES (\"$indName\", \"$indCash\", \"$indCash\")";
 				
 				if (!mysqli_query($con, $insertQuery)) {
-						die('Error: '. mysqli_error($conn));
+						die('Error: '. mysqli_error($con));
 				}
 				
 				echo "added $indName to individual<br>";
@@ -648,10 +648,10 @@
 	    		$portName = $data[1];
 				$portCash = $data[2];
 				
-				$insertQuery = "INSERT INTO portfolio (Name, Total_cash, Curr_cash) VALUES (\"$portName\", \"$portCash\", \"$portCash\")";
+				$insertQuery = "INSERT INTO portfolio (Name, Total_cash, Curr_cash, starting_funds) VALUES (\"$portName\", \"$portCash\", \"$portCash\", \"$portCash\")";
 				
 				if (!mysqli_query($con, $insertQuery)) {
-						die('Error: '. mysqli_error($conn));
+						die('Error: '. mysqli_error($con));
 				}
 				
 				echo "added $portName to portfolio<br>";
