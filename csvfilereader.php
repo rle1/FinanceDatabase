@@ -62,7 +62,7 @@
 						$quoteQuery = mysqli_query($con, "SELECT Quote FROM quotes WHERE Date='$newDate' AND Stock_name='$gettingSold'");
 						$row = $quoteQuery->fetch_assoc();
 						$quote = $row['Quote'];
-						if($quote == 0){
+						if($quote == 0 || empty($row)){
 							continue;
 						}
 						
@@ -121,6 +121,10 @@
 								$prevQuote = mysqli_query($con, "SELECT Quote FROM quotes WHERE Date = '$buyDate' AND Stock_name = '$stock'");
 								$row = $prevQuote->fetch_assoc();
 								$buyQuote = $row['Quote'];
+
+								if($buyQuote <=0 || empty($row)){
+									continue;
+								}
 								
 								$appFactor = $sellQuote / $buyQuote;
 
@@ -176,7 +180,7 @@
 						/************************************************************************************************
 						not sure if we should check if buyQuote or sellQuote is zero
 					**************************************************************************************************/
-					if($sellQuote == 0){
+					if($sellQuote == 0 || empty($row)){
 						echo "no quote exists<br>";
 						continue;
 					}
@@ -232,8 +236,6 @@
 				if($year < 2005 || $year > 2013){
 					continue;
 				}
-				
-				
 				
 	    		$indQuery = mysqli_query($con, "SELECT * FROM individual WHERE Name='$buyer'");
 				$portQuery = mysqli_query($con, "SELECT * FROM portfolio WHERE Name='$buyer'");
