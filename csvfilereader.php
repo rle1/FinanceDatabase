@@ -335,7 +335,7 @@
 					$percent = (double)$moneySpent/$totalCash;
 					
 					echo "add new relationship between $buyer ($portID) and $beingBought. $buyer has $percent invested in $beingBought<br>";
-					mysqli_query($con, "INSERT INTO portfolio_has_stocks (Portfolio_ID, Stock_name, percent_invested) VALUES (\"$portID\", \"$beingBought\", \"$percent\")");
+					mysqli_query($con, "INSERT INTO portfolio_has_stocks (Portfolio_ID, Stock_name, percent_invested, Money_invested) VALUES (\"$portID\", \"$beingBought\", \"$percent\", \"$moneySpent\")");
 					echo "logging $buyer ($portID) buying $beingBought<br>";
 					mysqli_query($con, "INSERT INTO portfolio_act_stocks (Portfolio_ID, Stock_name, Buy_or_sell, Date) VALUES (\"$portID\", \"$beingBought\", \"B\", \"$newDate\")");
 						
@@ -616,7 +616,7 @@
 					
 					//Adding portfolio-new company relationship
 					echo "adding the relationship between $seller ($portID) and $buying. $seller has $percentOfNewComp invested<br>";
-					mysqli_query($con, "INSERT INTO portfolio_has_stocks (Portfolio_ID, Stock_name, percent_invested) VALUES (\"$portID\", \"$buying\", \"$percentOfNewComp\")");
+					mysqli_query($con, "INSERT INTO portfolio_has_stocks (Portfolio_ID, Stock_name, percent_invested, Money_invested) VALUES (\"$portID\", \"$buying\", \"$percentOfNewComp\", \"$returnCash\")");
 					
 					//Update total value of portfolio
 					echo "updating total value of $seller ($portID) to $totalCash dollars<br>";
