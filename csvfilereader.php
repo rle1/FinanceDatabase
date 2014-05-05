@@ -121,6 +121,14 @@
 								$prevQuote = mysqli_query($con, "SELECT Quote FROM quotes WHERE Date = '$buyDate' AND Stock_name = '$stock'");
 								$row = $prevQuote->fetch_assoc();
 								$buyQuote = $row['Quote'];
+								
+								$appFactor = $sellQuote / $buyQuote;
+
+								$totalPortInvestment += $percentage;
+
+								$moneyInvested = $totalCash * $percentage;
+
+								$totalFundValue = $totalFundValue + ($moneyInvested * $appFactor);
 							}
 
 							$totalFundValue = $totalFundValue + ($totalCash * (1.0 - $totalPortInvestment));
