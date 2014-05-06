@@ -159,7 +159,7 @@
                                             
                                             if (mysqli_num_rows($results)) {
                                                 while ($row = mysqli_fetch_array($results)) {
-                                                    if (doubleval($totalCash == 0)) {
+                                                    if (doubleval($totalCash) == 0.0) {
                                                         continue;
                                                     }
                                                     $percentInvest = doubleval($row['moneyInvested']) / doubleval($totalCash);
