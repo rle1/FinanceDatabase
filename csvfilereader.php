@@ -7,7 +7,7 @@
  <body>
  	<?php
 
-	if (($handle = fopen("script4.csv", "r")) !== FALSE) {
+	if (($handle = fopen("script4partial.csv", "r")) !== FALSE) {
 
 		$con = mysqli_connect("localhost", "user1", "pass1");
 				if (!$con) {
@@ -22,12 +22,12 @@
 				$seller = $data[1];
 				$gettingSold = $data[2];
 				$newDate = $data[3];
-				//$newDate = $data[3];
-				//$dateSplit = explode("/", $date);
+				$date = $data[3];
+				$dateSplit = explode("/", $date);
 				
-				//$newDate = $dateSplit[2]."-".$dateSplit[0]."-".$dateSplit[1];
-				$dateSplit = explode("-", $newDate);
-				$year = intval($dateSplit[0]);
+				$newDate = $dateSplit[2]."-".$dateSplit[0]."-".$dateSplit[1];
+				//$dateSplit = explode("-", $newDate);
+				$year = intval($dateSplit[2]);
 				if($year < 2005 || $year > 2013){
 					continue;
 				}
@@ -231,12 +231,12 @@
 				$buyer = $data[1];
 				$beingBought = $data[2];
 				$moneySpent = $data[3];
-				$newDate = $data[4];
-				//$newDate = $data[3];
-				//$dateSplit = explode("/", $date);
-				//$newDate = $dateSplit[2]."-".$dateSplit[0]."-".$dateSplit[1];
-				$dateSplit = explode("-", $newDate);
-				$year = intval($dateSplit[0]);
+				//$newDate = $data[4];
+				$date = $data[4];
+				$dateSplit = explode("/", $date);
+				$newDate = $dateSplit[2]."-".$dateSplit[0]."-".$dateSplit[1];
+				//$dateSplit = explode("-", $newDate);
+				$year = intval($dateSplit[2]);
 				if($year < 2005 || $year > 2013){
 					continue;
 				}
@@ -300,9 +300,9 @@
 						
 						//Updating the portfolio's total/current cash after individual has invested
 						$portTotalMoney = $portRow['Total_cash'];
-						$newPortTMoney = $portTotalMoney+(double)$moneySpent;
+						$newPortTMoney = $portTotalMoney+$(double)moneySpent;
 						$portCurrMoney = $portRow['Curr_cash'];
-						$newPortCMoney = (double)$portCurrMoney+(double)$moneySpent;
+						$newPortCMoney = $portCurrMoney+(double)$moneySpent;
 						
 						//echo "updating $beingBought ($portID) total value to $newPortTMoney and current cash amount to $newPortCMoney<br>";
 						mysqli_query($con, "UPDATE portfolio SET Total_cash='$newPortTMoney', Curr_cash='$newPortCMoney' WHERE ID='$portID'");
@@ -349,12 +349,12 @@
 				$seller = $data[1];
 				$selling = $data[2];
 				$buying = $data[3];
-				$newDate = $data[4];
+				$date = $data[4];
 				//$newDate = $data[3];
-				//$dateSplit = explode("/", $date);
-				//$newDate = $dateSplit[2]."-".$dateSplit[0]."-".$dateSplit[1];
-				$dateSplit = explode("-", $newDate);
-				$year = intval($dateSplit[0]);
+				$dateSplit = explode("/", $date);
+				$newDate = $dateSplit[2]."-".$dateSplit[0]."-".$dateSplit[1];
+				//$dateSplit = explode("-", $newDate);
+				$year = intval($dateSplit[2]);
 				if($year < 2005 || $year > 2013){
 					continue;
 				}
