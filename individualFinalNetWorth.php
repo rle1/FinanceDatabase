@@ -168,7 +168,10 @@
                                                             $portfolio = $row['Name'];
                                                             $portTotalCash = $row['Total_cash'];
                                                             $portCurrCash = $row['Curr_cash'];
-            
+                                                            
+                                                            if (doubleval($portTotalCash) == 0.0) {
+                                                                continue;
+                                                            }
                                                             $indPercentInvest = doubleval($moneyInvested) / doubleval($portTotalCash);
                             
                                                             $query = "SELECT portfolio_has_stocks.stock_name AS stock, portfolio_has_stocks.percent_invested AS percentInvested FROM portfolio, portfolio_has_stocks WHERE portfolio.name = \"" . $portfolio . "\" and portfolio.ID = portfolio_has_stocks.portfolio_ID";
