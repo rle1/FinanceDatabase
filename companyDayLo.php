@@ -19,6 +19,7 @@
                        <li class="active"><a href="company.php">COMPANY</a></li>
                        <li><a href="individual.php">INDIVIDUAL</a></li>
                        <li><a href="portfolio.php">PORTFOLIO</a></li>
+                       <li><a href="mysteryQuery.php">MYSTERY QUERY</a></li>
                     </ul>
                 </div>
             </div>

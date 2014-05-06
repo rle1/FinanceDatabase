@@ -16,10 +16,10 @@
                     <ul class="nav navbar-nav">
                        <li><a href="index.php">HOME</a></li>
                        <li><a href="dataimport.php">DATA IMPORT</a></li>
-                       <li><a href="dataexport.php">DATA EXPORT</a></li>
                        <li><a href="company.php">COMPANY</a></li>
                        <li><a href="individual.php">INDIVIDUAL</a></li>
                        <li class="active"><a href="portfolio.php">PORTFOLIO</a></li>
+                       <li><a href="mysteryQuery.php">MYSTERY QUERY</a></li>
                     </ul>
                 </div>
             </div>

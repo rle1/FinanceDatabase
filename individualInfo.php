@@ -19,6 +19,9 @@
     else if (isset($_POST['returns'])) {
         header('Location: individualTotalReturns.php');
     }
+    else if (isset($_POST['annualReturn'])) {
+        header('Location: individualAnnualReturn.php');
+    }
     else if (isset($_POST['investments'])) {
         header('Location: individualTotalInvests.php');
     }

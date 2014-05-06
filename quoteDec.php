@@ -47,7 +47,7 @@
                 <table class="table table-striped">
                     <thead>
                         <tr>
-                            <th>COMPANY/STOCK WITH ANNUAL QUOTE INCREASE</th>
+                            <th>COMPANY/STOCK WITH ANNUAL QUOTE DECREASE</th>
                         </tr>
                     </thead>
                     
@@ -85,7 +85,7 @@
                                     }
                                     
                                     $default = $check;
-                                    sort($check);
+                                    rsort($check);
                                     
                                     $flag = true;
                                     $idx = 0;

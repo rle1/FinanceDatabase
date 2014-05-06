@@ -19,6 +19,7 @@
                        <li class="active"><a href="company.php">COMPANY</a></li>
                        <li><a href="individual.php">INDIVIDUAL</a></li>
                        <li><a href="portfolio.php">PORTFOLIO</a></li>
+                       <li><a href="mysteryQuery.php">MYSTERY QUERY</a></li>
                     </ul>
                 </div>
             </div>
@@ -82,6 +83,18 @@
                 </form>
             </b>
             <hr>
+            <b>
+                <form action="quoteIncDec.php" method="POST" name="quoteIncDec">
+                    <input type="submit" name="quoteInc" value="Display Companies with Annual Quote Increase" /><br><br>
+                    <input type="submit" name="quoteDec" value="Display Companies with Annual Quote Decrease" />
+                </form>
+            </b>
+            <hr>
+            <b>
+                <form action="stockRisk.php" method="POST" name="stockRisk">
+                    <input type="submit" name="risk" value="Display Risk of Stocks"><br><br>
+                </form>
+            </b>
         </div>
          
     </body>

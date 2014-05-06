@@ -19,6 +19,7 @@
                        <li><a href="company.php">COMPANY</a></li>
                        <li class="active"><a href="individual.php">INDIVIDUAL</a></li>
                        <li><a href="portfolio.php">PORTFOLIO</a></li>
+                       <li><a href="mysteryQuery.php">MYSTERY QUERY</a></li>
                     </ul>
                 </div>
             </div>
@@ -47,7 +48,7 @@
                     Individual Name(s): <input type="text" name="individual" value="" size="80" placeholder="Multiple entries, separate by commas"/> &nbsp <input type="checkbox" name="compareAll" /> &nbsp Compare All<br><br><br>
                     
                     <input type="submit" name="stocks" value="Generate List of Invested Companies/Stocks" /> &nbsp&nbsp <input type="submit" name="portfolios" value="Generate List of Invested Portfolios" /><br><br>
-                    <input type="submit" name="returns" value="Calculate Total Returns" /> &nbsp&nbsp <input type="submit" name="investments" value="Calculate Total Investments" /> &nbsp&nbsp <input type="submit" name="worth" value="Calculate Final Net Worth" />
+                    <input type="submit" name="returns" value="Calculate Total Returns" /> &nbsp&nbsp <input type="submit" name="annualReturn" value="Calculate Annualized Rate of Return" > &nbsp&nbsp <input type="submit" name="investments" value="Calculate Total Investments" /> &nbsp&nbsp <input type="submit" name="worth" value="Calculate Final Net Worth" />
                 </form>
             </b>
             <hr>

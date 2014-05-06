@@ -47,7 +47,10 @@
                 <table class="table table-striped">
                     <thead>
                         <tr>
-                            <th>COMPANY/STOCK WITH ANNUAL QUOTE INCREASE</th>
+                            <th>RANK</th>
+                            <th>COMPANY NAME</th>
+                            <th>STOCK NAME</th>
+                            <th>RISK</th>
                         </tr>
                     </thead>
                     
@@ -59,57 +62,75 @@
                             if(!$con){
                                 exit('Connect Error (' . mysqli_connect_errno() . ')' . mysqli_connect_error());
                             }
-            
+                
                             mysqli_set_charset($con, 'utf-8');
                             mysqli_select_db($con, "finance");
                             
                             $query = "SELECT * FROM company";
                             $compResults = mysqli_query($con, $query);
                             
-                            $list = array();
-                            $check = array();
-                            $index = 0;
+                            $storeData = array();
+                            $risk = 0;
+                            $tempVal = 0;
+                            $startVal = 0;
+                            
                             if (mysqli_num_rows($compResults)) {
                                 while ($row = mysqli_fetch_array($compResults)) {
                                     $company = $row['Name'];
                                     $stock_name = $row['Stock_name'];
-
-                                    $query = "SELECT quote FROM quotes WHERE quotes.stock_name = \"" . $stock_name . "\" and date LIKE '20%-01-03'";
+                                    
+                                    $storeData[$company . " / " . $stock_name] = 0;
+                                    
+                                    $query = "SELECT quote FROM quotes WHERE quotes.stock_name = \"" . $stock_name . "\"";
                                     $quoteResults = mysqli_query($con, $query);
-                                 
+                                    
                                     if (mysqli_num_rows($quoteResults)) {
                                         while ($row = mysqli_fetch_array($quoteResults)) {
-                                           
-                                            array_push($check, $row['quote']);
+                                            
+                                            if ($tempVal == 0) {
+                                                $startVal = $row['quote'];
+                                                $tempVal = $row['quote'];
+                                            }
+                                            else {
+                                                if ($row['quote'] < $tempVal) {
+                                                    $risk += $tempVal - $row['quote'];
+                                                }
+                                                else {
+                                                    if ($risk > $storeData[$company . " / " . $stock_name]) {
+                                                        $storeData[$company . " / " . $stock_name] = round($risk / $startVal * 100, 2); 
+                                                    }
+                                                    $startVal = $row['quote'];
+                                                    $risk = 0;
+                                                }
+                                                $tempVal= $row['quote'];
+                                            }
                                         }
-                                    }
-                                    
-                                    $default = $check;
-                                    sort($check);
-                                    
-                                    $flag = true;
-                                    $idx = 0;
-                                    foreach ($check as $val) {
-                                        if ($val != $default[$idx]) {
-                                            $flag = false;
-                                            break;
+                                        
+                                        if ($risk > $storeData[$company . " / " . $stock_name]) {
+                                            $storeData[$company . " / " . $stock_name] = round($risk / $startVal * 100, 2);
                                         }
-                                        $idx++;
+                                        
+                                        $startVal = 0;
+                                        $tempVal = 0;
+                                        $risk = 0;
                                     }
-                                    
-                                    if ($flag) {
-                                        array_push($list, $company . " / " . $stock_name);
-                                    }
-                                    
-                                    $check = array();
-                                }
+                                } 
+                            }
+   
+                            asort($storeData);
+
+                            $idx = 1;
+                            foreach ($storeData as $key => $value) {
+                                echo "<tr><td>" . $idx . "</td>";
+                                $dataSplit = explode(" / ", $key);
+                                echo "<td>" . $dataSplit[0] . "</td>";
+                                echo "<td>" . $dataSplit[1] . "</td>";
+                                
+                                echo "<td>". $storeData[$key] . "%</td></tr>";
+                                $idx++;
                             }
                             
-                            foreach ($list as $val) {
-                                echo "<tr><td>" . $val . "</td></tr>";
-                            }
-                            
-                            mysqli_close($con);          
+                            mysqli_close($con);
                         ?>
                     </tbody>
                 </table>
@@ -117,8 +138,8 @@
                 <form action="company.php" method="GET">
                     <input type = "Submit" value="Go Back" /> 
                 </form>
-                <br>
             </b>
+            <hr>
         </div>
          
     </body>

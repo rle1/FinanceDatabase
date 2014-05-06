@@ -19,6 +19,7 @@
                   <li><a href="company.php">COMPANY</a></li>
                   <li><a href="individual.php">INDIVIDUAL</a></li>
                   <li><a href="portfolio.php">PORTFOLIO</a></li>
+                  <li><a href="mysteryQuery.php">MYSTERY QUERY</a></li>
                </ul>
             </div>
          </div>
@@ -76,7 +77,11 @@
                - Calculate Appreciation/Depreciation Factor for Portfolios' Stocks for specified date range<br>
                <br>
                - CSV export of any data behavior display/calculation<br>
-               - Rankings for calculations on behaviors for individuals/portfolios
+               - Handle Mystery Query<br>
+               - Rankings for calculations on behaviors for individuals/portfolios<br>
+               - Display Companies with Annual Quote Increase/Decrease<br>
+               - Display Risk of Stocks<br>
+               - Calculate Rank for Individual's Stock Transaction by Annualized Rate of Return<br>
             </b>
          </p>
          <hr>
