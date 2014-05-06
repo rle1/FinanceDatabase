@@ -7,7 +7,9 @@
  <body>
  	<?php
 
-	if (($handle = fopen("script4partial.csv", "r")) !== FALSE) {
+	error_reporting(E_ERROR | E_PARSE);
+	
+	if (($handle = fopen("script2.csv", "r")) !== FALSE) {
 
 		$con = mysqli_connect("localhost", "user1", "pass1");
 				if (!$con) {
@@ -19,18 +21,31 @@
 
 	    while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
 	    	if($data[0] == "sell"){
+				
 				$seller = $data[1];
 				$gettingSold = $data[2];
-				$newDate = $data[3];
 				$date = $data[3];
-				$dateSplit = explode("/", $date);
 				
-				$newDate = $dateSplit[2]."-".$dateSplit[0]."-".$dateSplit[1];
-				//$dateSplit = explode("-", $newDate);
-				$year = intval($dateSplit[2]);
+				if(strpos($date, '/')){
+					$dateSplit = explode("/", $date);
+					$newDate = $dateSplit[2]."-".$dateSplit[0]."-".$dateSplit[1];
+					$year = intval($dateSplit[2]);
+				}else{
+					$dateSplit = explode("-", $date);
+					$newDate = $date;
+					$year = intval($dateSplit[0]);
+				}
+				
 				if($year < 2005 || $year > 2013){
 					continue;
 				}
+				/*$dateSplit = explode("/", $date);
+				$newDate = $dateSplit[2]."-".$dateSplit[0]."-".$dateSplit[1];
+				$year = intval($dateSplit[2]);
+				
+				if($year < 2005 || $year > 2013){
+					continue;
+				}*/
 				
 				$indQuery = mysqli_query($con, "SELECT * FROM individual WHERE Name='$seller'");
 				$portQuery = mysqli_query($con, "SELECT * FROM portfolio WHERE Name='$seller'");
@@ -101,14 +116,12 @@
 							$totalCash = $row['Total_cash'];
 							$currCash = $row['Curr_cash'];
 
-
 							$totalFundValue = 0.0;
 							$totalPortInvestment = 0.0;
 
 							while($row = mysqli_fetch_array($investmentsQuery)){
 								$stock = $row['Stock_name'];
 								$percentage = $row['percent_invested'];
-
 
 								$currentQuote = mysqli_query($con, "SELECT Quote From quotes WHERE Date='$newDate' AND Stock_name='$stock'");
 								$row = $currentQuote->fetch_assoc();
@@ -143,7 +156,7 @@
 							$indInvestPortQuery = mysqli_query($con, "SELECT Money_invested FROM individual_has_portfolios WHERE Individual_ID='$indID' AND Portfolio_ID='$portID'");
 							$row = $indInvestPortQuery->fetch_assoc();
 							$indInvestPort = $row['Money_invested'];
-
+							
 							$indInvestmentPercentage = $indInvestPort / $totalCash;
 
 							$returnCash = $indInvestmentPercentage * $totalFundValue; 
@@ -160,6 +173,9 @@
 							$newCurrCash = $currCash - $indInvestPort;
 							
 							mysqli_query($con, "UPDATE portfolio SET Total_cash='$newTotalCash', Curr_cash='$newCurrCash' WHERE ID='$portID'");
+							if($portID == 8){
+								echo "new Total_cash for portfolio is $newTotalCash dollars after $seller bought share of portfolio<br>";
+							}
 							mysqli_query($con, "INSERT INTO individual_act_portfolios (Individual_ID, Portfolio_ID, Buy_or_sell, Date) VALUES (\"$indID\", \"$portID\", \"S\", \"$newDate\")");
 							
 						}
@@ -221,25 +237,41 @@
 					////echo "$seller (ID: $portID ) sold $gettingSold stock at $sellQuote a stock . Bought $moneyInvested dollars with stock at $buyQuote a stock . Stock grew by a factor of $appFactor .<br>";
 					//echo "Received $returnCash dollars. Made total value of $seller $totalCash dollars and spending cash is $currentCash dollars.<br><br><br>";
 					mysqli_query($con, "UPDATE portfolio SET Total_cash='$totalCash', Curr_cash='$currentCash' WHERE ID='$portID'");
-
+					//if($portID == "8"){
+					//	echo "Total_cash for port is now $totalCash after portfolio sold stock in $gettingSold<br>";
+					//}
 					mysqli_query($con, "DELETE FROM portfolio_has_stocks WHERE Portfolio_ID='$portID' AND Stock_name='$gettingSold'");
 						
 					mysqli_query($con, "INSERT INTO portfolio_act_stocks (Portfolio_ID, Stock_name, Buy_or_sell, Date) VALUES (\"$portID\", \"$gettingSold\", \"S\", \"$newDate\")");
 				}
 
 			} else if($data[0] == "buy"){
+				
 				$buyer = $data[1];
 				$beingBought = $data[2];
 				$moneySpent = $data[3];
-				//$newDate = $data[4];
 				$date = $data[4];
-				$dateSplit = explode("/", $date);
-				$newDate = $dateSplit[2]."-".$dateSplit[0]."-".$dateSplit[1];
-				//$dateSplit = explode("-", $newDate);
-				$year = intval($dateSplit[2]);
+				
+				if(strpos($date, '/')){
+					$dateSplit = explode("/", $date);
+					$newDate = $dateSplit[2]."-".$dateSplit[0]."-".$dateSplit[1];
+					$year = intval($dateSplit[2]);
+				}else{
+					$dateSplit = explode("-", $date);
+					$newDate = $date;
+					$year = intval($dateSplit[0]);
+				}
+				
 				if($year < 2005 || $year > 2013){
 					continue;
 				}
+				/*$dateSplit = explode("/", $date);
+				$newDate = $dateSplit[2]."-".$dateSplit[0]."-".$dateSplit[1];
+				$year = intval($dateSplit[2]);
+				
+				if($year < 2005 || $year > 2013){
+					continue;
+				}*/
 				
 	    		$indQuery = mysqli_query($con, "SELECT * FROM individual WHERE Name='$buyer'");
 				$portQuery = mysqli_query($con, "SELECT * FROM portfolio WHERE Name='$buyer'");
@@ -300,12 +332,15 @@
 						
 						//Updating the portfolio's total/current cash after individual has invested
 						$portTotalMoney = $portRow['Total_cash'];
-						$newPortTMoney = $portTotalMoney+$(double)moneySpent;
+						$newPortTMoney = $portTotalMoney+(double)$moneySpent;
 						$portCurrMoney = $portRow['Curr_cash'];
 						$newPortCMoney = $portCurrMoney+(double)$moneySpent;
 						
 						//echo "updating $beingBought ($portID) total value to $newPortTMoney and current cash amount to $newPortCMoney<br>";
 						mysqli_query($con, "UPDATE portfolio SET Total_cash='$newPortTMoney', Curr_cash='$newPortCMoney' WHERE ID='$portID'");
+						if($portID==8){
+							echo "Total_cash is $newPortTMoney after individual ($indID) bought portfolio share<br>";
+						}
 						//echo "logging $buyer ($indID) buying $beingBought ($portID)";
 						mysqli_query($con, "INSERT INTO individual_act_portfolios (Individual_ID, Portfolio_ID, Buy_or_sell, Date) VALUES (\"$indID\", \"$portID\", \"B\", \"$newDate\")");	
 					}
@@ -346,18 +381,32 @@
 				}
 
 	    	} else if($data[0] == "sellbuy"){
+				
 				$seller = $data[1];
 				$selling = $data[2];
 				$buying = $data[3];
 				$date = $data[4];
-				//$newDate = $data[3];
-				$dateSplit = explode("/", $date);
-				$newDate = $dateSplit[2]."-".$dateSplit[0]."-".$dateSplit[1];
-				//$dateSplit = explode("-", $newDate);
-				$year = intval($dateSplit[2]);
+				
+				if(strpos($date, '/')){
+					$dateSplit = explode("/", $date);
+					$newDate = $dateSplit[2]."-".$dateSplit[0]."-".$dateSplit[1];
+					$year = intval($dateSplit[2]);
+				}else{
+					$dateSplit = explode("-", $date);
+					$newDate = $date;
+					$year = intval($dateSplit[0]);
+				}
+				
 				if($year < 2005 || $year > 2013){
 					continue;
 				}
+				/*$dateSplit = explode("/", $date);
+				$newDate = $dateSplit[2]."-".$dateSplit[0]."-".$dateSplit[1];
+				$year = intval($dateSplit[2]);
+				
+				if($year < 2005 || $year > 2013){
+					continue;
+				}*/
 				
 				$indQueryCheck = mysqli_query($con, "SELECT * FROM individual WHERE Name='$seller'");
 				$portQueryCheck = mysqli_query($con, "SELECT * FROM portfolio WHERE Name='$seller'");
@@ -434,6 +483,9 @@
 							mysqli_query($con, "INSERT INTO individual_has_portfolios (Individual_ID, Portfolio_ID, Money_invested) VALUES (\"$indID\", \"$buyingPortID\", \"$moneyMade\")");
 							//echo "updating $buying 's ($buyingPortID) total value to $newTC and current cash amount to $newCC.<br>";
 							mysqli_query($con, "UPDATE portfolio SET Total_cash='$newTC', Curr_cash='$newCC' WHERE ID='$buyingPortID'");
+							if($buyingPortID == 8){
+								echo "Total_cash is now $newTC after individual ($indID) sold stock in $selling and bought share in $buyingPortID<br>";
+							}
 							//echo "logging $seller ($indID) buying $buying ($buyingPortID)<br>";
 							mysqli_query($con, "INSERT INTO individual_act_portfolios (Individual_ID, Portfolio_ID, Buy_or_sell, Date) VALUES (\"$indID\", \"$buyingPortID\", \"B\", \"$newDate\")");
 						}
@@ -451,69 +503,69 @@
 						$indPortRow = $indPort->fetch_assoc();
 						//grab all investments made by the portfolio
 						
-							$investmentsQuery = mysqli_query($con, "SELECT Stock_name, percent_invested FROM portfolio_has_stocks WHERE Portfolio_ID='$portID'");
+						$investmentsQuery = mysqli_query($con, "SELECT Stock_name, percent_invested FROM portfolio_has_stocks WHERE Portfolio_ID='$portID'");
 
-							$totalCashQuery = mysqli_query($con, "SELECT * FROM portfolio WHERE ID='$portID'");
-							$row = $totalCashQuery->fetch_assoc();
-							$totalCash = $row['Total_cash'];
-							$currCash = $row['Curr_cash'];
-							
-							$totalFundValue = 0.0;
-							$totalPortInvestment = 0.0;
+						$totalCashQuery = mysqli_query($con, "SELECT * FROM portfolio WHERE ID='$portID'");
+						$row = $totalCashQuery->fetch_assoc();
+						$totalCash = $row['Total_cash'];
+						$currCash = $row['Curr_cash'];
+					
+						$totalFundValue = 0.0;
+						$totalPortInvestment = 0.0;
 
-							while($row = mysqli_fetch_array($investmentsQuery)){
-								$stock = $row['Stock_name'];
-								$percentage = $row['percent_invested'];
+						while($row = mysqli_fetch_array($investmentsQuery)){
+							$stock = $row['Stock_name'];
+							$percentage = $row['percent_invested'];
 
-								$currentQuote = mysqli_query($con, "SELECT Quote From quotes WHERE Date='$newDate' AND Stock_name='$stock'");
-								$row = $currentQuote->fetch_assoc();
-								$sellQuote = $row['Quote'];
+							$currentQuote = mysqli_query($con, "SELECT Quote From quotes WHERE Date='$newDate' AND Stock_name='$stock'");
+							$row = $currentQuote->fetch_assoc();
+							$sellQuote = $row['Quote'];
 									/************************************************************************************************
 						not sure if we should check if buyQuote or sellQuote is zero
 					**************************************************************************************************/
-								if(empty($row) || $sellQuote <=0){
-									continue;
-								}
+							if(empty($row) || $sellQuote <=0){
+								continue;
+							}
 
-								$buyDateQuery = mysqli_query($con, "SELECT Date FROM portfolio_act_stocks WHERE Portfolio_ID = '$portID' AND Stock_name='$stock' AND Buy_or_sell='B'");
-								$dateRow = $buyDateQuery->fetch_assoc();
-								$buyDate = $dateRow['Date'];
+							$buyDateQuery = mysqli_query($con, "SELECT Date FROM portfolio_act_stocks WHERE Portfolio_ID = '$portID' AND Stock_name='$stock' AND Buy_or_sell='B'");
+							$dateRow = $buyDateQuery->fetch_assoc();
+							$buyDate = $dateRow['Date'];
 
-								$prevQuote = mysqli_query($con, "SELECT Quote FROM quotes WHERE Date = '$buyDate' AND Stock_name = '$stock'");
-								$row = $prevQuote->fetch_assoc();
-								$buyQuote = $row['Quote'];
+							$prevQuote = mysqli_query($con, "SELECT Quote FROM quotes WHERE Date = '$buyDate' AND Stock_name = '$stock'");
+							$row = $prevQuote->fetch_assoc();
+							$buyQuote = $row['Quote'];
 									/************************************************************************************************
 						not sure if we should check if buyQuote or sellQuote is zero
 					**************************************************************************************************/
-								if(empty($row) || $buyQuote <= 0){
-									continue;
-								}
+							if(empty($row) || $buyQuote <= 0){
+								continue;
+							}
 								
 
-								$appFactor = $sellQuote / $buyQuote;
+							$appFactor = $sellQuote / $buyQuote;
 
-								$totalPortInvestment += $percentage;
+							$totalPortInvestment += $percentage;
 
-								$moneyInvested = $totalCash * $percentage;
+							$moneyInvested = $totalCash * $percentage;
 
-								$totalFundValue = $totalFundValue + ($moneyInvested * $appFactor);
+							$totalFundValue = $totalFundValue + ($moneyInvested * $appFactor);
 							
-							}
-							$totalFundValue = $totalFundValue + ($totalCash * (1.0 - $totalPortInvestment));
+						}
+						$totalFundValue = $totalFundValue + ($totalCash * (1.0 - $totalPortInvestment));
 
-							$indInvestPortQuery = mysqli_query($con, "SELECT Money_invested FROM individual_has_portfolios WHERE Individual_ID='$indID' AND Portfolio_ID='$portID'");
-							$row = $indInvestPortQuery->fetch_assoc();
-							$indInvestPort = $row['Money_invested'];
+						$indInvestPortQuery = mysqli_query($con, "SELECT Money_invested FROM individual_has_portfolios WHERE Individual_ID='$indID' AND Portfolio_ID='$portID'");
+						$row = $indInvestPortQuery->fetch_assoc();
+						$indInvestPort = $row['Money_invested'];
 
-							$indInvestmentPercentage = $indInvestPort / $totalCash;
-
-							$returnCash = $indInvestmentPercentage * $totalFundValue; 
+						$indInvestmentPercentage = $indInvestPort / $totalCash;
+						
+						$returnCash = $indInvestmentPercentage * $totalFundValue; 
 							
-							$indCashQuery = mysqli_query($con, "SELECT Cash FROM individual WHERE ID='$indID'");
-							$row = $indCashQuery->fetch_assoc();
-							$indCash = $row['Cash'];
+						$indCashQuery = mysqli_query($con, "SELECT Cash FROM individual WHERE ID='$indID'");
+						$row = $indCashQuery->fetch_assoc();
+						$indCash = $row['Cash'];
 
-							$finalCash = $indCash + $returnCash;
+						$finalCash = $indCash + $returnCash;
 						
 						$buyingStockQuery = mysqli_query($con, "SELECT * FROM company WHERE Stock_name='$buying'");
 						$buyingPortQuery = mysqli_query($con, "SELECT * FROM portfolio WHERE Name='$buying'");
@@ -527,6 +579,9 @@
 							$buyingQuoteRow = $buyingQuoteQuery->fetch_assoc();
 							$buyingQuote = $buyingQuoteRow['Quote'];
 							if(empty($row) || $buyingQuote <= 0 || $returnCash < $buyingQuote){
+								mysqli_query($con, "UPDATE individual SET Cash='$finalCash' WHERE ID='$indID'");
+								mysqli_query($con, "INSERT INTO individual_act_portfolios (Individual_ID, Portfolio_ID, Buy_or_sell, Date) VALUES (\"$indID\", \"$portID\", \"S\", \"$newDate\")");
+								mysqli_query($con, "DELETE FROM individual_has_portfolios WHERE Individual_ID='$indID' AND Portfolio_ID='$portID'");
 								continue;
 							}
 
@@ -547,6 +602,9 @@
 							mysqli_query($con, "INSERT INTO individual_has_portfolios (Individual_ID, Portfolio_ID, Money_invested) VALUES (\"$indID\", \"$buyingPortID\", \"returnCash\")");
 							//echo "updating $buying 's ($buyingPortID) total value to $newTC and current cash amount to $newCC.<br>";
 							mysqli_query($con, "UPDATE portfolio SET Total_cash='$newTC' AND Curr_cash='$newCC' WHERE ID='$buyingPortID'");
+							if($buyingPortID == 8){
+								echo "Total_cash for port is $newTC after individual ($indID) sold share in $portID and buying share in $buyingPortID<br>";
+							}
 							//echo "logging $seller ($indID) buying $buying ($buyingPortID)<br>";
 							mysqli_query($con, "INSERT INTO individual_act_portfolios (Individual_ID, Portfolio_ID, Buy_or_sell, Date) VALUES (\"$indID\", \"$buyingPortID\", \"B\", \"$newDate\")");
 						}
@@ -603,7 +661,7 @@
 
 					$returnCash = ($moneyInvested)*$appFactor;
 
-					$quoteQuery = mysqli_query($con, "SELECT Quote FROM quotes WHERE Date='$newDate' AND Stock_name='$beingBought'");
+					$quoteQuery = mysqli_query($con, "SELECT Quote FROM quotes WHERE Date='$newDate' AND Stock_name='$buying'");
 					$row = $quoteQuery->fetch_assoc();
 					$quote = $row['Quote'];
 					
@@ -611,6 +669,9 @@
 
 					if($quote == 0 || empty($row) || $returnCash < $quote){
 						mysqli_query($con, "UPDATE portfolio SET Total_cash='$totalCash' WHERE ID='$portID'");
+						if($portID == 8){
+							echo "total cash is now $totalCash after $portID sold share in $selling and bought stock in $buying<br> when buying quote is zero";
+						}
 						mysqli_query($con, "INSERT INTO portfolio_act_stocks (Portfolio_ID, Stock_name, Buy_or_sell, Date) VALUES (\"$portID\", \"$selling\", \"S\", \"$newDate\")");
 						mysqli_query($con, "DELETE FROM portfolio_has_stocks WHERE Portfolio_ID='$portID' AND Stock_name='$selling'");
 						continue;
@@ -625,7 +686,9 @@
 					//Update total value of portfolio
 					//echo "updating total value of $seller ($portID) to $totalCash dollars<br>";
 					mysqli_query($con, "UPDATE portfolio SET Total_cash='$totalCash' WHERE ID='$portID'");
-					
+					if($portID == 8){
+							echo "total cash is now $totalCash after $portID sold share in $selling and bought stock in $buying<br>";
+						}
 					//Log action
 					//echo "logging $seller ($portID) selling $selling<br>";
 					mysqli_query($con, "INSERT INTO portfolio_act_stocks (Portfolio_ID, Stock_name, Buy_or_sell, Date) VALUES (\"$portID\", \"$selling\", \"S\", \"$newDate\")");
