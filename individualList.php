@@ -18,8 +18,8 @@
                        <li><a href="dataimport.php">DATA IMPORT</a></li>
                        <li><a href="dataexport.php">DATA EXPORT</a></li>
                        <li><a href="company.php">COMPANY</a></li>
-                       <li><a href="individual.php">INDIVIDUAL</a></li>
-                       <li class="active"><a href="portfolio.php">PORTFOLIO</a></li>
+                       <li class="active"><a href="individual.php">INDIVIDUAL</a></li>
+                       <li><a href="portfolio.php">PORTFOLIO</a></li>
                     </ul>
                 </div>
             </div>
@@ -33,30 +33,30 @@
         </div>
         
         <div class="container content">
-            <h2><b>LIST OF PORTFOLIOS</b></h2>
+            <h2><b>LIST OF INDIVIDUALS</b></h2>
             <hr>
-                <b>    
+                <b>
                     <table class="table table-striped">
                         <thead>
                             <tr>
-                                <th>PORTFOLIO NAME</th>
+                                <th>INDIVIDUAL NAMES</th>
                             </tr>
                         </thead>
-                   
+
                         <tbody>
                             <?php
                                 $con = mysqli_connect("localhost", "user1", "pass1");
                                 if(!$con){
                                     exit('Connect Error (' . mysqli_connect_errno() . ')' . mysqli_connect_error());
                                 }
-            
+                    
                                 mysqli_set_charset($con, 'utf-8');
                                 mysqli_select_db($con, "finance");
                                 
-                                $result = mysqli_query($con, "SELECT * FROM portfolio");
-            
-                                while($row = mysqli_fetch_array($result)){
-                                    echo "<tr><td>" . htmlentities($row["Name"]) . "</td></tr>";
+                                $result = mysqli_query($con, "SELECT * FROM individual;");
+                                
+                                while ($row = mysqli_fetch_array($result)) {
+                                   echo "<tr><td>" . htmlentities($row["Name"]) . "</td></tr>";
                                 }
                                 
                                 mysqli_free_result($result);
@@ -64,33 +64,31 @@
                             ?>
                         </tbody>
                     </table>
-
+               
                     <br>
-                    
-                    <form action="portfolio.php" method="GET">
-                        <input type = "Submit" value="Go Back" /> 
+                    <form action="individual.php" method="GET" name="individual">
+                        <input type = "submit" value="Go Back" />
                     </form>
                 </b>
             <hr>
-            <h2><b>PORTFOLIO INFORMATION</b></h2>
+            <h2><b>INDIVIDUAL INFORMATION</b></h2>
             <hr>
             <b>
-                <form action="portfolioInfo.php" method="POST" name="portfolioInfo">
-                    Portfolio Name(s): <input type="text" name="portfolio" value="" size="80" placeholder="Multiple entries, separate by commas" /> &nbsp <input type="checkbox" name="compareAll" /> &nbsp Compare All<br><br><br>
-                    <input type="submit" name="stocks" value="Generate List of Invested Companies/Stocks" /><br><br>
-                    <input type="submit" name="returns" value="Calculate Total Returns" /> &nbsp&nbsp
-                    <input type="submit" name="investments" value="Calculate Total Investments" /> &nbsp&nbsp <input type="submit" name="worth" value="Calculate Final Net Worth" />
+                <form action="individualInfo.php" method="POST" name="individualInfo">
+                    Individual Name(s): <input type="text" name="individual" value="" required="required" size="80" placeholder="Multiple entries, separate by commas"/> &nbsp <input type="checkbox" name="compareAll" /> &nbsp Compare All<br><br><br>
+                    
+                    <input type="submit" name="stocks" value="Generate List of Invested Companies/Stocks" /> &nbsp&nbsp <input type="submit" name="portfolios" value="Generate List of Invested Portfolios" /><br><br>
+                    <input type="submit" name="returns" value="Calculate Total Returns" /> &nbsp&nbsp <input type="submit" name="investments" value="Calculate Total Investments" /> &nbsp&nbsp <input type="submit" name="worth" value="Calculate Final Net Worth" />
                 </form>
             </b>
             <hr>
             <b>
-                <form action="portfolioAppDep.php" method="POST" name="portfolioAppDep">
-                    Portfolio Name(s): <input type="text" name="portfolio" value="" size="80" placeholder="Multiple entries, separate by commas" /> &nbsp <input type="checkbox" name="compareAll" /> &nbsp Compare All<br><br>
+                <form action="individualAppDep.php" method="POST" name="individualAppDep">
+                    Individual Name(s): <input type="text" name="individual" value="" required="required" size="80" placeholder="Multiple entries, separate by commas"/> &nbsp <input type="checkbox" name="compareAll" /> &nbsp Compare All<br><br>
                     Date: <input type="date" name="date" required="required"/><br><br>
                     <input type="submit" name="appDep" value="Calculate Appreciation/Depreciation Factor" /><br><br>
                 </form>
             </b>
-            <hr>
         </div>
          
     </body>

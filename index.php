@@ -15,8 +15,7 @@
             <div class="collapse navbar-collapse">
                <ul class="nav navbar-nav">
                   <li class="active"><a href="index.php">HOME</a></li>
-                  <li><a href="dataimport.php">DATA IMPORT</a></li>
-                  <li><a href="dataexport.php">DATA EXPORT</a></li>
+                  <li><a href="dataImport.php">DATA IMPORT</a></li>
                   <li><a href="company.php">COMPANY</a></li>
                   <li><a href="individual.php">INDIVIDUAL</a></li>
                   <li><a href="portfolio.php">PORTFOLIO</a></li>
@@ -54,12 +53,30 @@
          <hr>
             <p>
             <b>
-               - Calculate an individual's total return<br>
-               - Calculate a fund's total return<br>
-               - Determine a Company's quote/volume/day_hi/day_lo at a certain time<br>
-               - How much money an individual/portfolio has invested in a company/portfolio ordered by ID number<br>
-               - What companies/portfolios an individual/portfolio is invested in at a certain time<br>
-               - How much a user's investment has appreciated or depreciated at time of query<br>
+               - Generate List of Companies/Stocks<br>
+               - Generate List of Individuals<br>
+               - Generate List of Portfolios<br>
+               <br>
+               - Display Quotes of Companies for specified date range<br>
+               - Display Day Hi of Companies for specified date range<br>
+               - Display Day Lo of Companies for specified date range<br>
+               - Display Volume of Companies for specified date range<br>
+               <br>
+               - Display list of Individual's current invested Companies/Stocks<br>
+               - Display list of Individual's current invested Portfolios<br>
+               - Calculate Total Returns for Individuals<br>
+               - Calculate Total Investments for Individuals<br>
+               - Calculate Final Net Worth for Individuals<br>
+               - Calculate Appreciation/Depreciation Factor for Individuals' Stocks/Portfolios for specified date range<br>
+               <br>
+               - Display list of Portfolio's current invested Companies/Stocks<br>
+               - Calculate Total Returns for Portfolios<br>
+               - Calculate Total Investments for Portfolios<br>
+               - Calculate Final Net Worth for Portfolios<br>
+               - Calculate Appreciation/Depreciation Factor for Portfolios' Stocks for specified date range<br>
+               <br>
+               - CSV export of any data behavior display/calculation<br>
+               - Rankings for calculations on behaviors for individuals/portfolios
             </b>
          </p>
          <hr>

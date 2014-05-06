@@ -49,7 +49,7 @@
                             <th>COMPANY NAME</th>
                             <th>STOCK NAME</th>
                             <th>DATE</th>
-                            <th>QUOTE</th>
+                            <th>DAY_LO</th>
                         </tr>
                     </thead>
                     
@@ -71,7 +71,7 @@
                             array_push($entry, "Company Name");
                             array_push($entry, "Stock Name");
                             array_push($entry, "Date");
-                            array_push($entry, "Quote");
+                            array_push($entry, "Day_lo");
                             
                             array_push($data, $entry);
                             
@@ -83,8 +83,9 @@
                                     while ($row = mysqli_fetch_array($compResults)) {
                                         $company = $row['Name'];
                                         $stock_name = $row['Stock_name'];
+                                                    
+                                        $query = "SELECT quotes.Day_lo AS day_lo, quotes.date AS date FROM company, quotes WHERE company.name = \"" . $company . "\" and quotes.Stock_name = \"" . $stock_name . "\" and quotes.date >= \"" . $_SESSION['startDate'] . "\" and quotes.date <= \"" . $_SESSION['endDate'] . "\"";
                                         
-                                        $query = "SELECT quotes.quote AS Quote, quotes.date AS date FROM company, quotes WHERE company.name = \"" . $company . "\" and quotes.Stock_name = \"" . $stock_name . "\" and quotes.date >= \"" . $_SESSION['startDate'] . "\" and quotes.date <= \"" . $_SESSION['endDate'] . "\"";
                                         $results = mysqli_query($con, $query);
                                            
                                         if (mysqli_num_rows($results)) {
@@ -94,18 +95,19 @@
                                                 array_push($entry, $company);
                                                 array_push($entry, $stock_name);
                                                 array_push($entry, $row["date"]);
-                                                array_push($entry, $row["Quote"]);
+                                                array_push($entry, $row["day_lo"]);
                                                 
                                                 array_push($data, $entry);
                                                 
                                                 echo "<tr><td>" . $company . "</td>";
                                                 echo "<td>" . $stock_name . "</td>";
                                                 echo "<td>" . htmlentities($row["date"]) . "</td>";
-                                                echo "<td>$" . htmlentities($row["Quote"]) . "</td></tr>";
+                                                echo "<td>$" . htmlentities($row["day_lo"]) . "</td></tr>";
                                             }
                                             mysqli_free_result($results);
                                         }
                                         else {
+                                            
                                             $entry = array();
                                             array_push($entry, $company);
                                             array_push($entry, $stock_name);
@@ -132,7 +134,8 @@
                                 foreach ($stockSplit as $stock) {
                                     $stock = trim($stock);
                                     
-                                    $query = "SELECT company.name as company, quotes.quote AS Quote, quotes.date AS date FROM company, quotes WHERE company.stock_name = \"" . $stock . "\" and quotes.Stock_name = \"" . $stock . "\" and quotes.date >= \"" . $_SESSION['startDate'] . "\" and quotes.date <= \"" . $_SESSION['endDate'] . "\"";
+                                    $query = "SELECT company.name as company, quotes.Day_lo AS day_lo, quotes.date AS date FROM company, quotes WHERE company.stock_name = \"" . $stock . "\" and quotes.Stock_name = \"" . $stock . "\" and quotes.date >= \"" . $_SESSION['startDate'] . "\" and quotes.date <= \"" . $_SESSION['endDate'] . "\"";
+                                        
                                     $results = mysqli_query($con, $query);
                                        
                                     if (mysqli_num_rows($results)) {
@@ -141,14 +144,14 @@
                                             array_push($entry, $row["company"]);
                                             array_push($entry, $stock);
                                             array_push($entry, $row["date"]);
-                                            array_push($entry, $row["Quote"]);
+                                            array_push($entry, $row["day_lo"]);
                                             
                                             array_push($data, $entry);
-                                                
-                                            echo "<tr><td>" . htmlentities($row["company"]) . "</td>";
+                                            
+                                            echo "<tr><td>" . htmlentities($row["company"]). "</td>";
                                             echo "<td>" . $stock . "</td>";
                                             echo "<td>" . htmlentities($row["date"]) . "</td>";
-                                            echo "<td>$" . htmlentities($row["Quote"]) . "</td></tr>";
+                                            echo "<td>$" . htmlentities($row["day_lo"]) . "</td></tr>";
                                         }
                                         mysqli_free_result($results);
                                     }
@@ -169,7 +172,7 @@
                                 }
                             }
                             
-                            $_SESSION['file'] = "quote";
+                            $_SESSION['file'] = "day_lo";
                             $_SESSION['data'] = $data;
                             
                             mysqli_close($con);

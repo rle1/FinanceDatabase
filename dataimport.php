@@ -16,7 +16,6 @@
                     <ul class="nav navbar-nav">
                        <li><a href="index.php">HOME</a></li>
                        <li class="active"><a href="dataimport.php">DATA IMPORT</a></li>
-                       <li><a href="dataexport.php">DATA EXPORT</a></li>
                        <li><a href="company.php">COMPANY</a></li>
                        <li><a href="individual.php">INDIVIDUAL</a></li>
                        <li><a href="portfolio.php">PORTFOLIO</a></li>
@@ -36,9 +35,9 @@
             <h2><b>IMPORT RECORDS OF INDIVIDUAL/PORTFOLIO ACTIVITY</b></h2>
             <hr>
                 <b>
-                    <form action="" method="GET" name="individualList">
+                    <form action="dataProcess.php" method="POST" name="dataProcess">
                         <input type="file" name="file"><br>
-                        <input type = "submit" value="Process Script" />
+                        <input type="submit" value="Process Script" />
                     </form>
                 </b>
             <hr>
