@@ -34,6 +34,16 @@
 		<div class="container content">
             <h2><b>MYSTERY QUERY</b></h2>
             <hr>
+            <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>FUND NAME</th>
+                                <th>INDIVIDUAL NAME</th>
+                                <th>FINAL NET WORTH RANK</th>
+                            </tr>
+                        </thead>
+                        
+                        <tbody>
             <?php
 
       				$con = mysqli_connect("localhost", "user1", "pass1");
@@ -139,6 +149,10 @@
                                       $portTotalCash = $row['Total_cash'];
                                       $portCurrCash = $row['Curr_cash'];
 
+                                      if(doubleval($portTotalCash) == 0){
+                                        continue;
+                                      }
+
                                       $indPercentInvest = doubleval($moneyInvested) / doubleval($portTotalCash);
       
                                       $query = "SELECT portfolio_has_stocks.stock_name AS stock, portfolio_has_stocks.percent_invested AS percentInvested FROM portfolio, portfolio_has_stocks WHERE portfolio.name = \"" . $portfolio . "\" and portfolio.ID = portfolio_has_stocks.portfolio_ID";
@@ -218,31 +232,20 @@
               while($row = mysqli_fetch_array($majorityParticipants)){
 
                 $idx = 1;
-                echo"<tr><td> ".$row[portName]." </td>";
-                echo"<td> ".$row[indName]." </td>"
+                echo"<tr><td> ".$row['portName']." </td>";
+                echo"<td> ".$row['indName']." </td>";
 
                 foreach ($worths as $key => $value) {
-                  $entry = array();
-                  array_push($entry, $idx);
-
-                  $dataSplit = explode("</td>", $tableEntries[$key]);
                   
-                  array_push($entry, explode("<td>", $dataSplit[0])[1]);
-                  array_push($entry, explode("<td>", $dataSplit[1])[1]);
-          
-                  array_push($data, $entry);
-                  if($key == $row[indName])
+                  if($key == $row['indName'])
                   echo "<td> #" . $idx . "</td>";
                   $idx++;
 
                 }
               }
-
-
-              
-
             ?>
- 		
+          </tbody>
+ 		 </table>
 		<hr>
 		<form action="individual.php" method="GET">
 			<input type = "Submit" value="Go Back" /> 
