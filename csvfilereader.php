@@ -173,9 +173,7 @@
 							$newCurrCash = $currCash - $indInvestPort;
 							
 							mysqli_query($con, "UPDATE portfolio SET Total_cash='$newTotalCash', Curr_cash='$newCurrCash' WHERE ID='$portID'");
-							if($portID == 8){
-								echo "new Total_cash for portfolio is $newTotalCash dollars after $seller bought share of portfolio<br>";
-							}
+
 							mysqli_query($con, "INSERT INTO individual_act_portfolios (Individual_ID, Portfolio_ID, Buy_or_sell, Date) VALUES (\"$indID\", \"$portID\", \"S\", \"$newDate\")");
 							
 						}
@@ -338,9 +336,7 @@
 						
 						//echo "updating $beingBought ($portID) total value to $newPortTMoney and current cash amount to $newPortCMoney<br>";
 						mysqli_query($con, "UPDATE portfolio SET Total_cash='$newPortTMoney', Curr_cash='$newPortCMoney' WHERE ID='$portID'");
-						if($portID==8){
-							echo "Total_cash is $newPortTMoney after individual ($indID) bought portfolio share<br>";
-						}
+
 						//echo "logging $buyer ($indID) buying $beingBought ($portID)";
 						mysqli_query($con, "INSERT INTO individual_act_portfolios (Individual_ID, Portfolio_ID, Buy_or_sell, Date) VALUES (\"$indID\", \"$portID\", \"B\", \"$newDate\")");	
 					}
@@ -483,9 +479,7 @@
 							mysqli_query($con, "INSERT INTO individual_has_portfolios (Individual_ID, Portfolio_ID, Money_invested) VALUES (\"$indID\", \"$buyingPortID\", \"$moneyMade\")");
 							//echo "updating $buying 's ($buyingPortID) total value to $newTC and current cash amount to $newCC.<br>";
 							mysqli_query($con, "UPDATE portfolio SET Total_cash='$newTC', Curr_cash='$newCC' WHERE ID='$buyingPortID'");
-							if($buyingPortID == 8){
-								echo "Total_cash is now $newTC after individual ($indID) sold stock in $selling and bought share in $buyingPortID<br>";
-							}
+
 							//echo "logging $seller ($indID) buying $buying ($buyingPortID)<br>";
 							mysqli_query($con, "INSERT INTO individual_act_portfolios (Individual_ID, Portfolio_ID, Buy_or_sell, Date) VALUES (\"$indID\", \"$buyingPortID\", \"B\", \"$newDate\")");
 						}
@@ -602,9 +596,7 @@
 							mysqli_query($con, "INSERT INTO individual_has_portfolios (Individual_ID, Portfolio_ID, Money_invested) VALUES (\"$indID\", \"$buyingPortID\", \"returnCash\")");
 							//echo "updating $buying 's ($buyingPortID) total value to $newTC and current cash amount to $newCC.<br>";
 							mysqli_query($con, "UPDATE portfolio SET Total_cash='$newTC' AND Curr_cash='$newCC' WHERE ID='$buyingPortID'");
-							if($buyingPortID == 8){
-								echo "Total_cash for port is $newTC after individual ($indID) sold share in $portID and buying share in $buyingPortID<br>";
-							}
+
 							//echo "logging $seller ($indID) buying $buying ($buyingPortID)<br>";
 							mysqli_query($con, "INSERT INTO individual_act_portfolios (Individual_ID, Portfolio_ID, Buy_or_sell, Date) VALUES (\"$indID\", \"$buyingPortID\", \"B\", \"$newDate\")");
 						}
@@ -669,9 +661,7 @@
 
 					if($quote == 0 || empty($row) || $returnCash < $quote){
 						mysqli_query($con, "UPDATE portfolio SET Total_cash='$totalCash' WHERE ID='$portID'");
-						if($portID == 8){
-							echo "total cash is now $totalCash after $portID sold share in $selling and bought stock in $buying<br> when buying quote is zero";
-						}
+
 						mysqli_query($con, "INSERT INTO portfolio_act_stocks (Portfolio_ID, Stock_name, Buy_or_sell, Date) VALUES (\"$portID\", \"$selling\", \"S\", \"$newDate\")");
 						mysqli_query($con, "DELETE FROM portfolio_has_stocks WHERE Portfolio_ID='$portID' AND Stock_name='$selling'");
 						continue;
@@ -686,9 +676,7 @@
 					//Update total value of portfolio
 					//echo "updating total value of $seller ($portID) to $totalCash dollars<br>";
 					mysqli_query($con, "UPDATE portfolio SET Total_cash='$totalCash' WHERE ID='$portID'");
-					if($portID == 8){
-							echo "total cash is now $totalCash after $portID sold share in $selling and bought stock in $buying<br>";
-						}
+
 					//Log action
 					//echo "logging $seller ($portID) selling $selling<br>";
 					mysqli_query($con, "INSERT INTO portfolio_act_stocks (Portfolio_ID, Stock_name, Buy_or_sell, Date) VALUES (\"$portID\", \"$selling\", \"S\", \"$newDate\")");
